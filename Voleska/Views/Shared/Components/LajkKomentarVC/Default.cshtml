@@ -1,0 +1,53 @@
+﻿@model Voleska.ViewModel.LajkAjaxViewModel
+@*
+    <td>
+        <form asp-area="" asp-controller="LajkaniKomentarji" method="post" asp-action="Create" asp-route-komentarId="@item.ID" asp-route-like="true" asp-route-blogId="@Model.ID">
+            <div class="form-group">
+                <input type="submit" id="like_@Model.ID" value="Všeč mi je!" class="btn btn-primary" onclick="this.submit();" @lajk />
+
+            </div>
+
+        </form>
+    </td>
+    <td>
+        <form asp-area="" asp-controller="LajkaniKomentarji" method="post" asp-action="Create" asp-route-komentarId="@item.ID" asp-route-like="false" asp-route-blogId="@Model.ID">
+            <div class="form-group">
+                <input type="submit" id="dislike_@Model.ID" value="Ni mi všeč!" class="btn btn-danger" onclick="this.submit();" @dislajk />
+            </div>
+
+        </form>
+
+    </td>
+    break;
+*@
+<div>
+    <button id="komentar-@Model.KomentarID" class="btn btn-primary mr-3" @Model.Like onclick="ajaxCreateKomentar(@Model.KomentarID, @Model.ID, true)"><i class="fa fa-thumbs-up"></i></button>
+</div>
+
+
+<div>
+    <button id="komentar-@Model.KomentarID" class="btn btn-danger " @Model.Dislike onclick="ajaxCreateKomentar(@Model.KomentarID, @Model.ID, false)"><i class="fa fa-thumbs-down"></i></button>
+</div>
+
+
+@*
+    <td>
+        <form asp-area="" asp-controller="LajkaniKomentarji" method="post" asp-action="Create" asp-route-komentarId="@item.ID" asp-route-like="true" asp-route-blogId="@Model.ID">
+            <div class="form-group">
+                <input type="submit" id="like_@Model.ID" value="Všeč mi je!" class="btn btn-primary" onclick="this.submit();" @lajkaDruge />
+
+            </div>
+
+        </form>
+    </td>
+    <td>
+        <form asp-area="" asp-controller="LajkaniKomentarji" method="post" asp-action="Create" asp-route-komentarId="@item.ID" asp-route-like="false" asp-route-blogId="@Model.ID">
+            <div class="form-group">
+                <input type="submit" id="dislike_@Model.ID" value="Ni mi všeč!" class="btn btn-danger" onclick="this.submit();" @dislajkaDruge />
+            </div>
+
+        </form>
+
+    </td>
+
+*@

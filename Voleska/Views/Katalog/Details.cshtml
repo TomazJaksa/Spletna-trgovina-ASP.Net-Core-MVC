@@ -1,0 +1,322 @@
+﻿@model Voleska.Models.Izdelek
+
+@{
+    ViewData["Title"] = "Details";
+}
+<script type="text/javascript">
+    function swapImage() {
+        var image = document.getElementById("imageToSwap");
+        var dropd = document.getElementById("opcijaParameter");
+        image.src = "/slike/" + dropd.value;
+    };
+
+
+    jQuery(document).ready(function ($) {
+
+        $(".btnrating").on('click', (function (e) {
+
+            var previous_value = $("#selected_rating").val();
+
+            var selected_value = $(this).attr("data-attr");
+            $("#selected_rating").val(selected_value);
+
+            $(".selected-rating").empty();
+            $(".selected-rating").html(selected_value);
+
+            for (i = 1; i <= selected_value; ++i) {
+                $("#rating-star-" + i).toggleClass('btn-warning');
+                $("#rating-star-" + i).toggleClass('btn-default');
+            }
+
+            for (ix = 1; ix <= previous_value; ++ix) {
+                $("#rating-star-" + ix).toggleClass('btn-warning');
+                $("#rating-star-" + ix).toggleClass('btn-default');
+            }
+
+        }));
+
+
+    });
+
+
+</script>
+
+
+<h1>Details</h1>
+
+<div>
+    <h4>Izdelek</h4>
+    @{
+        var vsotaOcen = 0;
+        var povprecnaOcena = 0;
+        @foreach (var item in ViewBag.OceneIzdelka)
+        {
+            vsotaOcen += item.Ocena;
+        }
+
+
+        if (ViewBag.SteviloOcen != 0)
+        {
+            povprecnaOcena = vsotaOcen / ViewBag.SteviloOcen;
+            <div>
+                @for (int i = 0; i < povprecnaOcena; i++)
+                {
+                    <span><i class="fa fa-star text-warning" aria-hidden="true"></i></span>
+                }
+            </div>
+
+        }
+        else
+        {
+            <p>Ni povprečne ocene</p>
+        }
+
+
+
+
+    }
+
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayName("Opcije")
+        </dt>
+
+        <div id="prikazOpcije">
+            <dd class="col-sm-10">
+                <table class="table">
+                    <tr>
+                        <th>Slika</th>
+
+                    </tr>
+                    @foreach (var item in Model.Opcije)
+                    {
+                        if (Model.Opcije.First() == item)
+                        {
+                            <tr>
+
+                                <td>
+                                    <img id="imageToSwap" src="~/slike/@item.Slika" class="img-fluid" width="300" asp-append-version="true" />
+                                </td>
+
+                            </tr>
+                        }
+
+                    }
+                </table>
+            </dd>
+        </div>
+
+
+
+        <dt class="col-sm-2"></dt>
+        <dd class="col-sm-10">
+            <form asp-action="DodajVKosarico" id="kosarica" asp-area="" asp-controller="Katalog" method="post">
+
+                <div class="form-group">
+
+                    <select id="opcijaParameter" name="opcijaParameter" class="form-control" onchange="swapImage()" required>
+                        <option value="" disabled selected>-- Izberi opcijo --</option>
+                        @{
+                            @foreach (var item in Model.Opcije)
+                            {
+
+                                var preveriZalogo = (item.Zaloga == true) ? null : "disabled";
+                                var negacija = (preveriZalogo == "disabled") ? null : "disabled";
+
+
+                                if (Model.Opcije.First() == item)
+                                {
+                                    <option value="@item.Slika" asp-route-opcijaId="@item.ID" disabled="@preveriZalogo">@Html.DisplayFor(modelItem => item.Ime)</option>
+
+                                }
+                                else
+                                {
+                                    <option disabled="@preveriZalogo" value="@item.Slika" asp-route-opcijaId="@item.ID">@Html.DisplayFor(modelItem => item.Ime)</option>
+                                }
+                            }
+
+                        }
+
+                    </select>
+
+
+
+
+                </div>
+                <div class="form-group">
+                    <select asp-for="MaterialID" name="MaterialID" id="MaterialID" class="form-control" asp-items="ViewBag.MaterialID"></select>
+                </div>
+                <div class="form-group">
+                    <input id="kolicina" name="kolicina" type="number" min="1" value="1" class="form-control" />
+                    <input type="hidden" id="cena" name="cena" value="@Model.Cena" />
+                    <input type="hidden" id="izdelekId" name="izdelekId" value="@Model.ID" />
+                </div>
+            </form>
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Ime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Ime)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Opis)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Opis)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Podrobnosti)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Podrobnosti)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Cena)
+        </dt>
+        <dd class="col-sm-10">
+            <h1>@Html.DisplayFor(model => model.Cena)</h1>
+        </dd>
+
+    </dl>
+</div>
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="form-group">
+        <input type="submit" value="Dodaj v košarico" class="btn btn-primary" form="kosarica" />
+    </div>
+}
+else
+{
+    <a class="nav-link text-white btn btn-primary" id="login" asp-area="Identity" asp-page="/Account/Login">Za dodajanje v košarico morate biti vpisani!</a>
+}
+
+
+<div class="my-5">
+
+    @{
+        var omogociOcenjevanje = 0;
+
+        @if (ViewBag.TransakcijeUporabnika != null)
+        {
+            @foreach (var transakcija in ViewBag.TransakcijeUporabnika)
+            {
+                @foreach (var narocilo in Model.Narocila)
+                {
+                    if (narocilo.TransakcijaID == transakcija.ID)
+                    {
+                        omogociOcenjevanje = 1;
+                        break;
+                    }
+                }
+
+            }
+        }
+
+        var zeOddalOceno = false;
+
+
+        @foreach (var item in Model.OceneIzdelkov)
+        {
+            if (ViewBag.TrenutniUser == item.ApplicationUserID)
+            {
+                zeOddalOceno = true;
+                break;
+            }
+        }
+
+
+        @if (omogociOcenjevanje == 1 && zeOddalOceno == false)
+        {
+            <h3>Kako se ti je dopadel izdelek?</h3>
+            <p>Vzemi si trenutek in povej kako si kaj zadovoljen z nakupom tega izdelka :)</p>
+
+            <form asp-action="OddajOceno" asp-controller="OceneIzdelkov" method="post" id="better-rating-form">
+                <div class="form-group" id="rating-ability-wrapper">
+                    <label class="control-label" for="rating">
+                        <input type="hidden" id="selected_rating" name="selected_rating" required="required">
+                        <input type="hidden" id="izdelekId" name="izdelekId" value="@Model.ID" />
+                    </label>
+                    <h2 class="bold rating-header" style="">
+                        <span class="selected-rating">0</span><small> / 5</small>
+                    </h2>
+                    <button type="button" class="btnrating btn btn-default btn-lg" data-attr="1" id="rating-star-1">
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btnrating btn btn-default btn-lg" data-attr="2" id="rating-star-2">
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btnrating btn btn-default btn-lg" data-attr="3" id="rating-star-3">
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btnrating btn btn-default btn-lg" data-attr="4" id="rating-star-4">
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btnrating btn btn-default btn-lg" data-attr="5" id="rating-star-5">
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+                <p class="text-danger my-3">@TempData["NiRatinga"]</p>
+
+                <textarea name="rate" id="" cols="50" rows="10" required></textarea>
+                <div>
+                    <button type="submit" class="btn btn-warning mt-3">Oddaj Oceno!</button>
+                </div>
+            </form>
+        }
+
+    }
+
+
+</div>
+
+<div class="my-5">
+    <h3 class="mb-4" id="ocene-in-komentarji">Ocene in Komentarji</h3>
+
+
+
+    @if (ViewBag.SteviloOcen == 0)
+    {
+
+        <p>Ni dodanih ocen in komentarjev</p>
+    }
+    else
+    {
+        if (ViewBag.SteviloOcen > 0)
+        {
+            @foreach (var item in Model.OceneIzdelkov)
+            {
+                <div class="mb-4">
+                    <h4>@item.ApplicationUser.UserName</h4>
+
+                    <div>
+                        @for (int i = 0; i < @item.Ocena; i++)
+                        {
+                            <span><i class="fa fa-star text-warning" aria-hidden="true"></i></span>
+                        }
+                        <p>@item.Komentar<div><small>@item.Posodobljen</small></div> </p>
+
+                        @if (ViewBag.TrenutniUser == item.ApplicationUserID)
+                        {
+                            <a asp-action="Edit" asp-controller="OceneIzdelkov" class="btn btn-success" asp-route-id="@item.ID"><i class="fa fa-edit mr-2"></i>Uredi</a>
+                            <a asp-action="Delete" asp-controller="OceneIzdelkov" class="btn btn-danger" asp-route-id="@item.ID"><i class="fa fa-trash mr-2"></i>Izbriši</a>
+                        }
+                    </div>
+
+
+
+                </div>
+
+            }
+        }
+
+    }
+</div>
+
+<div>
+    <a asp-action="Index" asp-route-id="@Model.TipIzdelkaID" asp-route-imeTipaIzdelka="@ViewBag.TipIzdelka">Back to List</a>
+</div>
+<button type="button" class="btn btn-primary" id="myBtn">Show Toast</button>

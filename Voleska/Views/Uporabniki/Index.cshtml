@@ -1,0 +1,272 @@
+﻿@model PaginatedList<Voleska.Areas.Identity.Data.ApplicationUser>
+
+@{
+    ViewData["Title"] = "Uporabniki";
+}
+
+<h1>Uporabniki</h1>
+
+<div id="prenosPodatkovRole" class="no-display">
+    @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.PrenosPodatkovRoleVC), new { })
+</div>
+
+
+
+<div class="row">
+    <div class="col-md-10">
+        <form asp-controller="Uporabniki" asp-action="Index" method="get">
+            <p>
+                <input class="p-2" type="text" name="SearchString" placeholder="Uporabniško ime..." value="@ViewBag.SearchString">
+                <input class="p-2" type="text" name="SearchString2" placeholder="Email..." value="@ViewBag.SearchString2">
+                <input class="p-2" type="text" name="SearchString3" placeholder="Ime..." value="@ViewBag.SearchString3">
+                <input class="p-2" type="text" name="SearchString4" placeholder="Priimek..." value="@ViewBag.SearchString4">
+                <input type="hidden" name="filtriranje" value="@ViewBag.Filtriranje" />
+                <button type="submit" class="btn btn-info p-3">
+                    <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+                </button>
+                @if (@ViewBag.SearchString != null || @ViewBag.SearchString2 != null || @ViewBag.SearchString3 != null || @ViewBag.SearchString4 != null)
+                {
+                    <div><a asp-action="Index" asp-controller="Uporabniki">Nazaj na prikaz vseh uporabnikov</a></div>
+                }
+            </p>
+        </form>
+    </div>
+    <div class="col-md-2">
+        <!-- Split button -->
+        <div class="btn-group">
+            <a type="button" class="btn btn-info" asp-action="Index" asp-controller="Uporabniki">
+
+                @if (ViewBag.IzbranFilter == null)
+                {
+                    <span>Razvrščanje</span>
+                }
+                else
+                {
+                    <span>@ViewBag.IzbranFilter</span>
+                }
+
+            </a>
+
+            <button type="button" class="btn btn-info dropdown-toggle px-3" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+
+            <div class="dropdown-menu">
+                <a class="dropdown-item" asp-action="Index" asp-controller="Uporabniki" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-searchString4="@ViewBag.SearchString4">Privzeto</a>
+                <a class="dropdown-item" asp-action="Index" asp-controller="Uporabniki" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-searchString4="@ViewBag.SearchString4" asp-route-filtriranje="datumPadajoce">Najnovejši</a>
+                <a class="dropdown-item" asp-action="Index" asp-controller="Uporabniki" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-searchString4="@ViewBag.SearchString4" asp-route-filtriranje="datumNarascajoce">Najstarejši</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+@{
+    var izbranaRola = "";
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayName("Username")
+                </th>
+
+                <th>
+                    @Html.DisplayName("Email")
+                </th>
+                <th>
+                    @Html.DisplayName("Ime")
+                </th>
+                <th>
+                    @Html.DisplayName("Priimek")
+                </th>
+                <th>
+                    @Html.DisplayName("Aktiven")
+                </th>
+
+                <th>
+                    @Html.DisplayName("Naslov")
+                </th>
+                <th>
+                    @Html.DisplayName("Vloga")
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserName)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Ime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Priimek)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Aktiven)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Naslov.Ulica)
+                        @Html.DisplayFor(modelItem => item.Naslov.HisnaStevilka)
+                    </td>
+                    
+                    <td>
+                        @foreach (var role in item.UserRoles)
+                        {
+
+                            izbranaRola = @role.ApplicationRole.Id;
+                        }
+                        <!-- Basic dropdown -->
+
+                        <select class="browser-default custom-select" onchange="ajaxChangeRole(this);" id="selectRole-@item.Id">
+                            @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.VlogeVC), new { selectedRole = izbranaRola, userId = item.Id })
+
+                        </select>
+                        <!-- Basic dropdown -->
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+@{
+
+    var prejsnjaStran = 1;
+
+
+    if (ViewBag.StevilkaStrani != null)
+    {
+        prejsnjaStran = ViewBag.StevilkaStrani - 1;
+    }
+    var naslednjaStran = ViewBag.StevilkaStrani + 1;
+
+    if (ViewBag.StevilkaStrani == null)
+    {
+        naslednjaStran = 2;
+    }
+
+    var izklopi = "";
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination pg-blue">
+            @if (!@Model.HasPreviousPage)
+            {
+                izklopi = "text-muted izklopi";
+            }
+            <li class="page-item">
+                <a class="page-link @izklopi" asp-route-stevilkaStrani="@prejsnjaStran" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-searchString4="@ViewBag.SearchString4" asp-route-filtriranje="@ViewBag.Filtriranje">Previous</a>
+            </li>
+            @for (var i = 1; i <= Model.TotalPages; i++)
+            {
+                if (i == @Model.PageIndex)
+                {
+                    <li class="page-item active">
+                        <a class="page-link" asp-route-kliknjenLinkStrani="@i" asp-route-stevilkaStrani="@i" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-searchString4="@ViewBag.SearchString4" asp-route-filtriranje="@ViewBag.Filtriranje">@i <span class="sr-only">(current)</span></a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item"><a class="page-link" asp-route-kliknjenLinkStrani="@i" asp-route-stevilkaStrani="@i" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-searchString4="@ViewBag.SearchString4" asp-route-filtriranje="@ViewBag.Filtriranje">@i</a></li>
+                }
+
+
+
+            }
+
+            @if (@Model.HasNextPage)
+            {
+                izklopi = "";
+            }
+            else
+            {
+                izklopi = "text-muted izklopi";
+            }
+            <li class="page-item ">
+                <a class="page-link @izklopi" asp-route-stevilkaStrani="@naslednjaStran" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-searchString4="@ViewBag.SearchString4" asp-route-filtriranje="@ViewBag.Filtriranje">Next</a>
+            </li>
+        </ul>
+    </nav>
+
+}
+
+<p>
+    <a class="nav-link" asp-area="" asp-controller="Administration" asp-action="Index">Seznam vlog</a>
+</p>
+
+
+@section Scripts {
+    <script>
+
+@*VLOGE AJAX*@
+
+        function ajaxChangeRole(select) {
+
+            var selectedOption = select.options[select.selectedIndex];
+
+            var roleId = selectedOption.value;
+            var userId = select.options[select.selectedIndex].getAttribute('data-userId');
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ChangeRole", "Administration")',
+                data: {roleId: roleId, userId: userId},
+                dataType: "html",
+                success: function (data) {
+                  
+                    $('#prenosPodatkovRole').html(data);
+
+                    var rId = $('#prenosPodatkov').attr("asp-route-roleIdAjax");
+                    var uId = $('#prenosPodatkov').attr("asp-route-userIdAjax");
+
+                    ajaxRoleReload(rId, uId);
+                    
+                },
+                failure: function (data) {
+
+                    alert("Fail!");
+                },
+                error: function (data) {
+                    alert("Zašteku ful!");
+                }
+
+            });
+
+
+        }
+
+        function ajaxRoleReload(roleId, userId) {
+            $.ajax({
+                url: '@Url.Action("RoleReload", "Administration")',
+                data: {roleId: roleId, userId: userId },
+                success: function (data) {
+
+                    $('#selectRole-' + userId).html(data);
+
+                },
+                failure: function (response) {
+                    alert("Error v ajaxRoleReload");
+                },
+                error: function (response) {
+                    alert("Error v ajaxRoleReload");
+                }
+            });
+        };
+
+
+    </script>
+}

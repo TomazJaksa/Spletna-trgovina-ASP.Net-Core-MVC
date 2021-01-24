@@ -1,0 +1,335 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="full-height">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0,maximum-scale=1.0" />
+    <meta name="google-signin-client_id" content="610270812444-u99et1755d97o1tk7bnkgn4usq1ftpl3.apps.googleusercontent.com">
+
+    <title>Voleska - @ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!--MDB BOOTSTRAP-->
+    <link href="~/mdb/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/mdb/css/mdb.min.css" rel="stylesheet">
+    <link href="~/mdb/css/style.css" rel="stylesheet">
+    <!--MDB BOOTSTRAP-->
+    <!--JQUERY-->
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+
+    <!--JQUERY-->
+
+    <script src="~/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+    <!--Favicon linki-->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <!--Favicon linki-->
+    <script>
+        $(document).ready(function () {
+
+            $(function () {
+                $('body').scrollspy({ target: '#spyNav' })
+
+                var trenutnaStran = $('#trenutniNaslov').data("value");
+                
+                if (trenutnaStran == "Urejanje izdelkov") {
+                    trenutnaStran = "UrejanjeIzdelkov";
+                    $('#uredi').addClass("active");
+                    $('#' + trenutnaStran).addClass("izbrana");
+                } else if (trenutnaStran=="Transakcije" || trenutnaStran=="Uporabniki") {
+                    $('#uredi').addClass("active");
+                    $('#' + trenutnaStran).addClass("izbrana");
+                } else if (trenutnaStran == "Profile" || trenutnaStran == "Manage Email" || trenutnaStran == "Change password" || trenutnaStran =="Manage your external logins") {
+                    $('#UporabnikIkona').addClass("active");
+                    trenutnaStran = "manage";
+                    $('#' + trenutnaStran).addClass("izbrana");
+                } else if (trenutnaStran == "Moja Košarica") {
+                    trenutnaStran = "kosarica";
+                    $('#'+trenutnaStran).addClass("active");
+                } else if (trenutnaStran == "Prijava" || trenutnaStran == "Registracija") {
+                    if (trenutnaStran == "Prijava") {
+                        trenutnaStran = "login";
+                    } else {
+                        trenutnaStran = "register";
+                    }
+                    $('#UporabnikIkona').addClass("active");
+                    $('#' + trenutnaStran).addClass("izbrana");
+                }
+                else {
+                    $('#' + trenutnaStran).addClass("active");
+                }
+                
+            });
+
+            $(function () {
+                new WOW().init();
+            });
+            
+
+            $('.burger-button').on('click', function () {
+
+                $('.animated-icon3').toggleClass('open');
+            });
+
+            
+            $(function () {
+                $('#manage').tooltip({ delay: { show: 700, hide: 0 }, trigger: 'hover' });
+
+                $(".fb").tooltip({
+                    delay: { show: 0, hide: 0 },
+                    trigger: 'hover'
+                });
+
+                $(".insta").tooltip({
+                    delay: { show: 0, hide: 0 },
+                    trigger: 'hover'
+                });
+
+                $(".kosarica").tooltip({
+                    delay: { show: 0, hide: 0 },
+                    trigger: 'hover'
+                });
+            })
+            
+
+            // Add slideDown animation to Bootstrap dropdown when expanding.
+            $('.dropdown').on('show.bs.dropdown', function () {
+                $(this).find('.dropdown-menu').first().stop(true, true).slideDown();
+            });
+
+            // Add slideUp animation to Bootstrap dropdown when collapsing.
+            $('.dropdown').on('hide.bs.dropdown', function () {
+                $(this).find('.dropdown-menu').first().stop(true, true).slideUp();
+            });
+
+
+
+
+
+        });
+    </script>
+
+</head>
+@{
+    var prilagodiNav = "height:fit-content;";
+    var razmik = "visibility:hidden;";
+    var barva = "setColor";
+   
+    <body>
+
+        @if (@ViewBag.Title == "Naslovna stran")
+        {
+            prilagodiNav = "";
+            razmik = "display:none;";
+            barva = "";
+        }
+        <header id="navigacija" style=@prilagodiNav>
+            <nav style=@razmik class='p-5' aria-hidden='true' id="trenutniNaslov" data-value='@ViewData["Title"]'></nav> <!-- Dummy nav bar ustvari razmik ravno za velikost navbar-a -->
+            <nav id="spyNav" class=" @barva correctNavbar navbar fixed-top navbar-expand-lg navbar-toggleable-sm navbar-dark scrolling-navbar p-0">
+
+                <a class="navbar-brand mb-2 ml-2" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/slike/Logo.png" height="60" alt="Voleska logo">
+                </a>
+
+
+
+                <button class="navbar-toggler burger-button mr-2" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <div class="animated-icon3"><span></span><span></span><span></span></div>
+                </button>
+
+
+                <div class="navbar-collapse collapse d-lg-inline-flex px-2 py-2 " id="navbarSupportedContent">
+                    <ul class="nav-pills navbar-nav nav-flex-icons mr-auto py-1 justify-content-between">
+
+                        @if (ViewData["Title"] == "Naslovna stran")
+                        {
+                            <li id="Naslovna stran" class="nav-item">
+                                <a class="nav-link" href="#domov">Domov</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="#oMeni">O meni</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#kontakt">Kontakt</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li id="Naslovna stran" class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index" asp-route-izbira="domov">Domov</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index" asp-route-izbira="oMeni">O meni</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index" asp-route-izbira="kontakt">Kontakt</a>
+                            </li>
+                        }
+
+
+
+                        <li id="Blogi" class="nav-item ">
+                            <a class="nav-link" asp-area="" asp-controller="Blogi" asp-action="Index">Blog</a>
+                        </li>
+
+                        <li id="Katalog" class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Katalog" asp-action="Index">Katalog izdelkov</a>
+                        </li>
+
+                    </ul>
+
+                    <ul class="nav-pills navbar-nav nav-flex-icons ml-auto py-1 justify-content-between">
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("ADMINISTRATOR"))
+                        {
+                            <li class="nav-item dropdown" id="uredi">
+                                <a class="nav-link dropdown-toggle" id="urejanje" data-toggle="dropdown"
+                                   aria-haspopup="true" aria-expanded="false">
+                                    Urejanje
+                                </a>
+                                <div class="dropdown-menu dropdown-default p-2 z-depth-5" aria-labelledby="urejanje">
+                                    <a id="UrejanjeIzdelkov" class="dropdown-item dropDownCustom hoverable" asp-area="" asp-controller="Izdelki" asp-action="Index">Urejanje izdelkov</a>
+                                    <a id="Uporabniki" class="dropdown-item dropDownCustom hoverable" asp-area="" asp-controller="Uporabniki" asp-action="Index">Uporabniki</a>
+                                    <a id="Transakcije" class="dropdown-item dropDownCustom hoverable" asp-area="" asp-controller="Transakcije" asp-action="Index">Transakcije</a>
+                                </div>
+                            </li>
+
+                        }
+
+
+
+                        <li class="nav-item socialIcon">
+                            <a class="nav-link fb" href="https://www.facebook.com/voleskaccessories/" target="_blank" data-toggle="tooltip" data-placement="bottom" title='Facebook'><i class="fab fa-facebook-f light-green-text-2"></i></a>
+                        </li>
+                        <li class="nav-item socialIcon">
+                            <a class="nav-link insta" href="https://www.instagram.com/voleskaccessories/" target="_blank" data-toggle="tooltip" data-placement="bottom" title='Instagram'><i class="fab fa-instagram light-green-text-2"></i></a>
+                        </li>
+
+                        <partial name="_LoginPartial.cshtml" />
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li id="kosarica" class="nav-item">
+                                
+                                @await Component.InvokeAsync("SteviloIzdelkovVKosarici")
+
+                            </li>
+                        }
+
+                    </ul>
+
+
+
+                </div>
+
+            </nav>
+
+            @*
+            @if (@ViewBag.Title == "Naslovna stran")
+            {
+
+                <div class="view intro-2 animated fadeIn" style="">
+                    <div class="full-bg-img">
+                        <div class="mask rgba-black-light flex-center">
+                            <div class="col-md-12 mb-4 white-text text-center ">
+
+
+                                <h3 class="display-3 font-weight-bold white-text mb-0 pt-md-5 pt-5 animated fadeInLeft slow">Izbran lesen nakit</h3>
+                                <hr class="hr-light my-4 w-75">
+                                <h4 class="subtext-header mt-2 mb-4 animated fadeInRight slow">
+                                    Etične in unikatne živalice, cvetlice ter druge naravne lepote v obliki lesenih uhančkov in brošk
+                                </h4>
+                                <a asp-controller="Katalog" asp-action="Index" class="btn-outline-white animated flipInX delay-2s" id="roundMe">
+                                    Katalog izdelkov
+                                </a>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            *@
+        </header>
+
+        <div class="container-fluid mt-4 mb-5">
+            <main role="main" class="pb-3 mx-5">
+                @RenderBody()
+            </main>
+        </div>
+
+        <!--footer-->
+        <footer class="page-footer font-small wow fadeIn " style="background-color:#480048">
+
+            <!-- Footer Elements -->
+            <div class="container">
+
+                <!-- Grid row-->
+                <div class="row">
+
+                    <!-- Grid column -->
+                    <div class="col-md-12 py-5">
+                        <div class="mb-5 flex-center">
+
+                            <!-- Facebook -->
+
+                            <button type="submit" class="grow roundButton btn-primary hoverable waves-light z-depth-1-half" name="provider" data-toggle="tooltip" data-placement="bottom" title="Vpiši me z  računom"><i class="grow fab fa-facebook"></i></button>
+
+                            <!--Instagram-->
+
+                            <button type="submit" class="grow roundButton btn-danger hoverable waves-light z-depth-1-half " name="provider" data-toggle="tooltip" data-placement="bottom" title="Vpiši me z  računom"><i class="grow  fab fa-instagram"></i></button>
+
+                        </div>
+                    </div>
+                    <!-- Grid column -->
+
+                </div>
+                <!-- Grid row-->
+
+            </div>
+            <!-- Footer Elements -->
+            <!-- Copyright -->
+            <div class="footer-copyright text-center py-3">
+                © 2021 Copyright:
+                <a href="#">Voleska.</a><a class="ml-2" asp-area="" asp-controller="Home" asp-action="Privacy">Zasebnost</a>
+            </div>
+            <!-- Copyright -->
+        </footer>
+        <!--footer-->
+
+
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script>
+            var loadFile = function (event) {
+                var output = document.getElementById('output');
+                output.src = URL.createObjectURL(event.target.files[0]);
+                output.onload = function () {
+                    URL.revokeObjectURL(output.src) // free memory
+                }
+            };
+        </script>
+        <!--MDB BOOTSTRAP-->
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script type="text/javascript" src="~/mdb/js/jquery-3.4.1.min.js"></script>
+        <script type="text/javascript" src="~/mdb/js/popper.min.js"></script>
+        <!--<script type="text/javascript" src="~/mdb/js/bootstrap.min.js"></script>-->
+        <script type="text/javascript" src="~/mdb/js/mdb.min.js"></script>
+        <!--MDB BOOTSTRAP-->
+        @RenderSection("Scripts", required: false)
+    </body>
+}
+</html>

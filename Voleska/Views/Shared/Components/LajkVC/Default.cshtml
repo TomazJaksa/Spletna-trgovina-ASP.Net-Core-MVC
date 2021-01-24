@@ -1,0 +1,32 @@
+﻿@model Voleska.ViewModel.LajkAjaxViewModel
+
+
+<div>
+    @*
+        <form id="blog-@item.ID" asp-area="" asp-controller="LajkaniBlogi" method="post" asp-action="Create" asp-route-blogId="@item.ID" asp-route-like="true" asp-route-stevilkaStrani="@Model.PageIndex" asp-route-searchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje">
+            <div class="form-group">
+                <input type="submit" id="like_@item.ID" value="Všeč mi je!" class="btn btn-primary" onclick="this.submit();" />
+
+            </div>
+
+        </form>
+    *@
+
+    <button id="blog-@Model.ID" class="btn btn-primary mr-3" @Model.Like onclick="ajaxCreate(@Model.ID, true)"><i class="fa fa-thumbs-up"></i></button>
+
+</div>
+
+
+<div>
+    @*
+         <form id="blog-@item.ID" asp-area="" asp-controller="LajkaniBlogi" method="post" asp-action="Create" asp-route-blogId="@item.ID" asp-route-like="false" asp-route-stevilkaStrani="@Model.PageIndex" asp-route-searchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje">
+            <div class="form-group">
+                <input type="submit" id="dislike_@item.ID" value="Ni mi všeč!" class="btn btn-danger" onclick="this.submit();" />
+            </div>
+
+        </form>
+    *@
+
+    <button id="blog-@Model.ID" class="btn btn-danger " @Model.Dislike onclick="ajaxCreate(@Model.ID, false)"><i class="fa fa-thumbs-down"></i></button>
+</div>
+

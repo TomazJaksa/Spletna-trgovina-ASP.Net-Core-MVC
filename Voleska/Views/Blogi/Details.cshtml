@@ -1,0 +1,495 @@
+﻿@model Voleska.Models.Blog
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+
+    <!-- Add .modal-dialog-centered to .modal-dialog to vertically center the modal -->
+    <div class="modal-dialog modal-dialog-centered" role="document">
+
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Izbris komentarja</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Izbrišem izbran komentar?
+            </div>
+
+            <form class="no-display">
+                <input type="hidden" id="komentarId" value="" />
+                <input type="hidden" id="blogId" value="" />
+            </form>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zapri</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="ajaxDeleteConfirmed(document.getElementById('komentarId').value, document.getElementById('blogId').value)">Da, izbriši!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h1>Details @Model.ID</h1>
+<div id="prenosPodatkovLajk" class="no-display">
+    @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.PrenosPodatkovLajkVC), new { })
+</div>
+
+<div id="prenosPodatkovKomentar" class="no-display">
+    @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.PrenosPodatkov2VC), new { })
+</div>
+
+<div id="prenosPodatkovNovKomentar" class="no-display">
+    @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.PrenosPodatkovKomentarVC), new { })
+</div>
+
+<div id="izbrisiKomentar" class="no-display">
+    @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.IzbrisiKomentarVC), new { })
+</div>
+
+
+<div>
+    <h4>Blog</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Naslov)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Naslov)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Slika)
+        </dt>
+        <dd class="col-sm-10">
+
+            <img src="~/thumbnail/@Model.Slika" class="img-fluid" asp-append-version="true" />
+
+
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Povzetek)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Povzetek)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Clanek)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Clanek)
+            <div class="d-flex" id="preusmeriNaSeznam">
+                @{
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        int bloger = 0;
+                        int uporabnik = 0;
+
+                        @foreach (var lajkBlogov in Model.LajkaniBlogi)
+                        {
+                            if (lajkBlogov.ApplicationUserID == ViewBag.UserID)
+                            {
+                                uporabnik = 1;
+                            }
+                            else if (lajkBlogov.ApplicationUserID == ViewBag.BlogerID)
+                            {
+                                bloger = 1;
+                            }
+                        }
+
+
+
+                        @foreach (var lajkBlogov in Model.LajkaniBlogi)
+                        {
+                            var obstaja = (lajkBlogov.ApplicationUserID == ViewBag.UserID) ? true : false;
+
+                            var lajk = (lajkBlogov.Lajk == true && obstaja) ? "disabled" : "";
+                            var dislajk = (lajkBlogov.Lajk == false && obstaja) ? "disabled" : "";
+
+                            if (lajkBlogov.BlogID == Model.ID)
+                            {
+                                if (bloger == 1 && uporabnik == 0)
+                                {
+                                    <div id="likeSection-@Model.ID" class="d-flex">
+
+                                        @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.LajkVC), new { blogId = lajkBlogov.BlogID, like = lajk, dislike = dislajk })
+
+                                    </div>
+                                    break;
+                                }
+
+                                if (obstaja)
+                                {
+                                    <div id="likeSection-@Model.ID" class="d-flex">
+
+                                        @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.LajkVC), new { blogId = lajkBlogov.BlogID, like = lajk, dislike = dislajk })
+
+                                    </div>
+                                }
+                            }
+
+                        }
+
+
+                    }
+                    else
+                    {
+                        <div>
+                            <a class="nav-link text-white btn btn-primary" id="login" asp-area="Identity" asp-page="/Account/Login">Vpiši se!</a>
+                        </div>
+
+                    }
+                }
+            </div>
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Bloger)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Bloger)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Dodan)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Dodan)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SteviloLike)
+        </dt>
+        <dd class="col-sm-10" id="like-@Model.ID">
+            @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.SteviloLikeVC), new { steviloLike = Model.SteviloLike })
+
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SteviloDislike)
+        </dt>
+        <dd class="col-sm-10" id="dislike-@Model.ID">
+            @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.SteviloDislikeVC), new { steviloDislike = Model.SteviloDislike })
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Komentarji)
+        </dt>
+        <dd class="col-sm-10">
+            <table class="table" id="seznamKomentarjev">
+
+
+                @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.SeznamKomentarjevVC), new { blogId = Model.ID })
+
+
+            </table>
+        </dd>
+    </dl>
+</div>
+@if (User.Identity.IsAuthenticated)
+{
+    <div id="vnosKomentarja">
+        @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.VnosKomentarjaVC))
+    </div>
+
+    <button class="btn btn-primary mr-3" onclick="return ajaxOddaj(@Model.ID);">
+        <i class="fa fa-comments" aria-hidden="true"></i>
+    </button>
+}
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
+        <a asp-action="Index">Back to List</a>
+    </div>
+
+
+
+    @section Scripts {
+        <script>
+
+@*BLOGI AJAX*@
+        function ajaxCreate(blogId, like) {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Create", "LajkaniBlogi")',
+                data: {blogId: blogId, like: like},
+                dataType: "html",
+                success: function (data) {
+
+                    $('#prenosPodatkovLajk').html(data);
+
+                    var like = $('#prenosPodatkov-' + blogId).attr("asp-route-likeAjax");
+                    var dislike = $('#prenosPodatkov-' + blogId).attr("asp-route-dislikeAjax");
+                    var steviloDislike = $('#prenosPodatkov-' + blogId).attr("asp-route-steviloDislikeAjax");
+                    var steviloLike = $('#prenosPodatkov-' + blogId).attr("asp-route-steviloLikeAjax");
+
+
+                    ajaxGumbiReload(blogId, like, dislike);
+                    ajaxSteviloLikeReload(steviloLike, blogId);
+                    ajaxSteviloDislikeReload(steviloDislike, blogId);
+                },
+                failure: function (data) {
+
+                    alert(response);
+                },
+                error: function (data) {
+                    console.log("Error!");
+                }
+
+            });
+        }
+
+        function ajaxGumbiReload(blogId, like, dislike) {
+            $.ajax({
+                url: '@Url.Action("GumbiReload", "LajkaniBlogi")',
+                data: { blogId: blogId, lajk: like, dislajk: dislike },
+                success: function (data) {
+
+                    $('#likeSection-' + blogId).html(data);
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function ajaxSteviloLikeReload(steviloLike, blogId) {
+            $.ajax({
+                url: '@Url.Action("SteviloLikeReload", "LajkaniBlogi")',
+                data: { steviloLike: steviloLike },
+                success: function (data) {
+
+                    $('#like-' + blogId).html(data);
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+         function ajaxSteviloDislikeReload(steviloDislike, blogId) {
+            $.ajax({
+                url: '@Url.Action("SteviloDislikeReload", "LajkaniBlogi")',
+                data: { steviloDislike: steviloDislike },
+                success: function (data) {
+
+                    $('#dislike-' + blogId).html(data);
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+    @* KOMENTARJI AJAX *@
+
+
+        function ajaxOddaj(blogId) {
+
+            var vsebina;
+            vsebina = $("#vsebina").val();
+            if (vsebina == "") {
+                $('#napaka').html("Vnesite komentar,da oddate komentar...Genius.");
+                $('#napaka').css("display", "block");
+                return false;
+            };
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Create", "Komentarji")',
+                data: { vsebina: vsebina, blogId: blogId },
+                success: function (data) {
+
+                    $('#prenosPodatkovNovKomentar').html(data);
+
+                    var komentarId = $('#novKomentar').attr("asp-route-komentarAjax");
+
+                    ajaxSeznamReload(komentarId, blogId);
+                    ajaxVnosReload();
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+
+
+        }
+
+        function ajaxSeznamReload(komentarId, blogId) {
+            $.ajax({
+                url: '@Url.Action("SeznamReload", "Komentarji")',
+                data: { komentarId: komentarId, blogId: blogId},
+                success: function (data) {
+
+                    $('#seznamKomentarjev').html(data);
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function ajaxVnosReload() {
+            $.ajax({
+                url: '@Url.Action("VnosReload", "Komentarji")',
+                data: { },
+                success: function (data) {
+
+                    $('#vnosKomentarja').html(data);
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+
+        function ajaxCreateKomentar(komentarId, blogId, like) {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Create", "LajkaniKomentarji")',
+                data: {komentarId: komentarId, blogId: blogId, like: like},
+                dataType: "html",
+                success: function (data) {
+
+                    $('#prenosPodatkovKomentar').html(data);
+
+                    var like = $('#prenosPodatkovKomentar-' + blogId).attr("asp-route-likeAjax");
+                    var dislike = $('#prenosPodatkovKomentar-' + blogId).attr("asp-route-dislikeAjax");
+                    var steviloDislike = $('#prenosPodatkovKomentar-' + blogId).attr("asp-route-steviloDislikeAjax");
+                    var steviloLike = $('#prenosPodatkovKomentar-' + blogId).attr("asp-route-steviloLikeAjax");
+
+                    /*alert(like);
+                    alert(dislike);*/
+
+                    ajaxGumbiKomentarReload(komentarId, blogId, like, dislike);
+                    ajaxSteviloLikeKomentarReload(steviloLike, komentarId);
+                    ajaxSteviloDislikeKomentarReload(steviloDislike, komentarId);
+                },
+                failure: function (data) {
+
+                    alert(response);
+                },
+                error: function (data) {
+                    console.log("Error!");
+                }
+
+            });
+        }
+
+        function ajaxGumbiKomentarReload(komentarId, blogId, like, dislike) {
+            $.ajax({
+                url: '@Url.Action("GumbiReload", "LajkaniKomentarji")',
+                data: {komentarId: komentarId, blogId: blogId, lajk: like, dislajk: dislike },
+                success: function (data) {
+
+                    $('#likeSection2-' + komentarId).html(data);
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function ajaxSteviloLikeKomentarReload(steviloLike, komentarId) {
+            $.ajax({
+                url: '@Url.Action("SteviloLikeReload", "LajkaniKomentarji")',
+                data: { steviloLike: steviloLike },
+                success: function (data) {
+
+                    $('#like-' + komentarId).html(data);
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+         function ajaxSteviloDislikeKomentarReload(steviloDislike, komentarId) {
+            $.ajax({
+                url: '@Url.Action("SteviloDislikeReload", "LajkaniKomentarji")',
+                data: { steviloDislike: steviloDislike },
+                success: function (data) {
+
+                    $('#dislike-' + komentarId).html(data);
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        $(function () {
+            $('body').tooltip({ selector: '[data-toggle="tooltip"]' });
+        });
+
+        function izbrisi(komentarId, blogId) {
+
+            $('#komentarId').val(komentarId);
+            $('#blogId').val(blogId);
+        }
+
+        function ajaxDeleteConfirmed(komentarId, blogId) {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeleteConfirmed", "Komentarji")',
+                data: { id: komentarId, blogId: blogId },
+                success: function (data) {
+
+                    $('#izbrisiKomentar').html(data);
+
+                    var izbrisan = $('#izbrisanKomentar').attr("asp-route-komentarAjax");
+
+                    $('#komentar-' + izbrisan).addClass("animated bounceOutLeft");
+                    setTimeout(function () {
+                        $('#komentar-' + izbrisan).addClass("no-display");
+                    }, 700);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        </script>
+    }

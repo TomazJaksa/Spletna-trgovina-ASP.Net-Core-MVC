@@ -1,0 +1,51 @@
+﻿@model Voleska.Models.LajkanjeKomentarjev
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>LajkanjeKomentarjev</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Lajk" /> @Html.DisplayNameFor(model => model.Lajk)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="Dodan" class="control-label"></label>
+                <input asp-for="Dodan" class="form-control" />
+                <span asp-validation-for="Dodan" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Posodobljen" class="control-label"></label>
+                <input asp-for="Posodobljen" class="form-control" />
+                <span asp-validation-for="Posodobljen" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ApplicationUserID" class="control-label"></label>
+                <select asp-for="ApplicationUserID" class ="form-control" asp-items="ViewBag.UporabnikID"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="KomentarID" class="control-label"></label>
+                <select asp-for="KomentarID" class ="form-control" asp-items="ViewBag.KomentarID"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
