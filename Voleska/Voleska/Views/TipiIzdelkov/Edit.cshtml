@@ -1,0 +1,160 @@
+﻿@model Voleska.ViewModel.TipIzdelkaEditViewModel
+
+@{
+    ViewData["Title"] = "Uredi";
+}
+
+<nav aria-label="breadcrumb" class="">
+    <ol class="breadcrumb bg-white d-flex justify-content-center">
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-izbira="domov" class="customColor">Domov</a></li>
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Katalog" asp-action="Index" class="customColor">Katalog</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="TipiIzdelkov" class="customColor">Tipi izdelkov</a></li>
+        <li class="breadcrumb-item active">Uredi</li>
+    </ol>
+</nav>
+
+<h1 class="text-center mb-2">Uredi tip izdelka</h1>
+
+<div class="row justify-content-center d-flex">
+    
+        <div class="col-md-7 justify-content-center d-flex">
+                 <input type="hidden" value="@Model.Ime" class="no-display" id="trenutniTipIzdelka"/>
+
+                 <form asp-action="Edit" enctype="multipart/form-data" class="needs-validation" novalidate>
+                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                     <input type="hidden" asp-for="ID" />
+                     <div class="form-group md-form md-outline">
+                         <label asp-for="Ime" class="control-label"></label>
+
+                         <input asp-for="Ime" class="form-control z-depth-1" required />
+
+
+                         <div class="valid-tooltip">
+                             Izgleda okej!
+                         </div>
+                         <div class="invalid-tooltip">
+                             <span id="errorMessage">Ime je obvezno!</span>
+                         </div>
+                     </div>
+                     <div id="prikazSlike">
+                         <img id="output" src="~/katalogSlike/@Model.ObstojecaSlika" asp-append-version="true" class="z-depth-1 img-thumbnail d-flex justify-content-center" width="290"/>
+                     </div>
+                    <div class="form-group pt-2 d-flex justify-content-center">
+                        <label for="slika" class="mt-2 btn-sm btn-outline-info control-label">Spremeni sliko</label>
+                        <input type="file" accept="image/*" onchange="loadFile(event)" asp-for="Slika" id="slika" class="form-control" style="display:none" />
+                        <span asp-validation-for="Slika" class="text-danger"></span>
+                    </div>
+
+
+
+                         <div class="form-group d-flex justify-content-center">
+                             <input type="submit" value="Shrani spremembe" class="btn btn-primary" />
+                         </div>
+                         <div class="justify-content-center d-flex">
+                             <small><a asp-action="Index" class="text-center customColor">Nazaj na seznam</a></small>
+                         </div>
+
+                 </form>
+           
+        </div>
+       
+    
+</div>
+
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+<script>
+
+
+        $(document).ready(function () {
+
+
+            $('input[type="file"]').change(function () {
+                $('#prikazSlike').removeClass("animated fadeIn");
+                $('#prikazSlike').addClass("d-flex justify-content-center mb-4");
+                readURL(this);
+            });
+
+
+            $('input[type="text"]').on('change keyup paste', function (event) {
+                validirajAjax(event);
+            });
+        });
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#output').attr('src', e.target.result);
+                    $('#prikazSlike').removeClass("animated fadeOut");
+                    $('#prikazSlike').addClass("animated fadeIn");
+                    $('#prikazSlike').removeClass("no-display");
+                }
+
+                reader.readAsDataURL(input.files[0]); // convert to base64 string
+            }
+        }
+
+        function validirajAjax(vrednostInput) {
+            var vrednost = vrednostInput.target.value;
+            var tip = $("#trenutniTipIzdelka").val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Preveri", "TipiIzdelkov")',
+                data: { ime: vrednost, tip: tip },
+                success: function (data) {
+
+
+                    if (data) {
+
+                       
+                        $('#errorMessage').text("Ime že obstaja!");
+                        $('input[type="text"]').removeClass("valid");
+                        $('input[type="text"]').addClass("input-validation-error");
+                        vrednostInput.target.setCustomValidity('Ime že obstaja!');
+                    } else {
+
+                        $('#errorMessage').text("Ime je obvezno!");
+
+                        vrednostInput.target.setCustomValidity('');
+                    }
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+
+
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+</script>
+}
+

@@ -1,0 +1,321 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Registracija";
+    Layout = "~/Areas/Identity/Pages/Account/_AuthLayout.cshtml";
+}
+
+<div class="row col-12 text-center d-flex justify-content-center">
+    <div class="col-12">
+        <form asp-route-returnUrl="@Model.ReturnUrl" method="post" class="needs-validation" novalidate id="registracijaObrazec">
+            <h1>@ViewData["Title"]</h1>
+            <h6>Ustvari nov račun.</h6>
+            <hr />
+
+            <div class="form-row mb-0 pb-0 d-flex justify-content-between">
+                
+                <div class="col-md-4 form-group md-form md-outline input-with-pre-icon">
+                    <i class="fas fa-at  input-prefix"></i>
+                    <label asp-for="Input.Username">Uporabniško ime</label>
+                    <input asp-for="Input.Username" class="form-control"  maxlength="20" required />
+                    <div class="valid-tooltip animated-fadeIn">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip animated fadeIn">
+
+                        <span id="errorMessage">Uporabniško ime je obvezno!</span>
+
+                    </div>
+                </div>
+
+
+
+                <div class="col-md-4 form-group md-form md-outline input-with-pre-icon">
+                    <i class="fas fa-user  input-prefix"></i>
+                    <label asp-for="Input.Ime">Ime</label>
+                    <input asp-for="Input.Ime" class="form-control" required />
+                    <div class="valid-tooltip animated fadeIn">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip animated fadeIn">
+                        <span asp-validation-for="Input.Ime" class="text-white"></span>
+                    </div>
+                </div>
+
+
+                <div class="col-md-4 form-group md-form md-outline input-with-pre-icon">
+                    <i class="fas fa-user-edit  input-prefix"></i>
+                    <label asp-for="Input.Priimek">Priimek</label>
+                    <input asp-for="Input.Priimek" class="form-control" required />
+                    <div class="valid-tooltip animated fadeIn">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip animated fadeIn">
+                        <span asp-validation-for="Input.Priimek" class="text-white"></span>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="form-row mb-0 pb-0">
+                <div class="col-md-6 form-group md-form md-outline input-with-pre-icon">
+                    <i class="fas fa-lock  input-prefix"></i>
+                    <label asp-for="Input.Password">Geslo</label>
+                    <input asp-for="Input.Password" class="form-control" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{10,100}$" />
+                    <div class="valid-tooltip animated fadeIn">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip animated fadeIn">
+                        <span asp-validation-for="Input.Password" class="text-white"></span>
+                    </div>
+
+                </div>
+
+                <div class="col form-group md-form md-outline input-with-pre-icon">
+                    <i class="fas fa-lock  input-prefix"></i>
+                    <label asp-for="Input.ConfirmPassword">Potrditev gesla</label>
+                    <input asp-for="Input.ConfirmPassword" class="form-control" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{10,100}$" />
+                    <div class="valid-tooltip animated fadeIn">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip animated fadeIn">
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-white"></span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-row mb-0 pb-0 d-flex align-items-center">
+                <div class="col form-group  md-form md-outline input-with-pre-icon">
+                    <i class="fas fa-envelope  input-prefix"></i>
+                    <label asp-for="Input.Email">E-mail</label>
+                    
+                    <input asp-for="Input.Email" class="form-control" required/>
+                    <div class="valid-tooltip animated fadeIn">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip animated fadeIn">
+                        <span id="errorMessage2">E-naslov je obvezen!</span>
+                    </div>
+                    
+                </div>
+
+
+                <div class="col form-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="true" asp-for="Input.Novice">
+                        <label class="form-check-label keepBlack" for="novice">
+                            Naroči me na novice
+                        </label>
+
+                    </div>
+                </div>
+
+
+            </div>
+
+            <hr />
+            <h6 class="mt-4">Dodaj Naslov (Neobvezno)</h6>
+            <div class="form-row mb-0 pb-0">
+
+                <div class="col-md-9 form-group md-form md-outline">
+                    <label asp-for="Input.Ulica">Ulica</label>
+                    <input asp-for="Input.Ulica" class="form-control" />
+                    <div class="valid-tooltip animated fadeIn">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip animated fadeIn">
+                        <span asp-validation-for="Input.Ulica" class="text-white"></span>
+                    </div>
+                </div>
+                <div class="col-md-3 form-group md-form md-outline">
+                    <label asp-for="Input.HisnaStevilka">Hišna številka</label>
+                    <input asp-for="Input.HisnaStevilka" class="form-control" />
+                    <div class="valid-tooltip animated fadeIn">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip animated fadeIn">
+                        <span asp-validation-for="Input.HisnaStevilka" class="text-white"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row mb-1">
+                <div class="col-md-6 form-group md-form md-outline">
+                    <label asp-for="Input.PostnaStevilka">Poštna številka</label>
+                    <input asp-for="Input.PostnaStevilka" class="form-control" />
+                    <div class="valid-tooltip animated fadeIn">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip animated fadeIn">
+                        <span asp-validation-for="Input.PostnaStevilka" class="text-white"></span>
+                    </div>
+                </div>
+                <div class="col-md-6 form-group md-form md-outline">
+                    <label asp-for="Input.Kraj">Kraj</label>
+                    <input asp-for="Input.Kraj" class="form-control" />
+                    <div class="valid-tooltip animated fadeIn">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip animated fadeIn">
+                        <span asp-validation-for="Input.Kraj" class="text-white"></span>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-default mb-3">Registracija</button>
+        </form>
+    </div>
+    <!-- <div class="col-md-6 col-md-offset-2">
+         <section>
+             <h4>Use another service to register.</h4>
+             <hr />
+             @{
+                 if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                 {
+                     <div>
+                         <p>
+                             There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
+                             for details on setting up this ASP.NET application to support logging in via external services.
+                         </p>
+                     </div>
+                 }
+                 else
+                 {
+                     <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                         <div>
+                             <p>
+                                 @foreach (var provider in Model.ExternalLogins)
+                                 {
+                                     <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                 }
+                             </p>
+                         </div>
+                     </form>
+                 }
+             }
+         </section>
+     </div>-->
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        $('.alert').alert();
+
+
+
+        $(document).ready(function () {
+
+
+
+
+            $("#registracijaObrazec").find('input:visible:first').on('change keyup paste', function (event) {
+                if (this.value) {
+                    validirajAjax(event);
+                }
+            });
+
+
+
+            $("#registracijaObrazec").find('input:visible:eq(5)').on('change keyup paste', function (event) {
+                if (this.value) {
+                    validirajAjax2(event);
+                }
+            });
+
+        });
+
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+        function validirajAjax(vrednostInput) {
+            var vrednost = vrednostInput.target.value;
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("IsUsernameInUse", "FormValidator")',
+                data: { username: vrednost },
+                success: function (data) {
+
+
+                    if (data) {
+
+
+                        $('#errorMessage').text("Uporabniško ime že obstaja!");
+                        $("#registracijaObrazec").find('input:visible:first').removeClass("valid");
+                        $("#registracijaObrazec").find('input:visible:first').addClass("input-validation-error");
+                        vrednostInput.target.setCustomValidity('Ime že obstaja!');
+                    } else {
+
+                        $('#errorMessage').text("Uporabniško ime je obvezno!");
+
+                        vrednostInput.target.setCustomValidity('');
+                    }
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+
+
+        }
+
+        function validirajAjax2(vrednostInput) {
+            var vrednost = vrednostInput.target.value;
+            
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("IsEmailInUse", "FormValidator")',
+                data: { email: vrednost },
+                success: function (data) {
+
+
+                    if (data) {
+
+
+                        $('#errorMessage2').text("E-naslov že obstaja!");
+                        $("#registracijaObrazec").find('input:visible:eq(5)').removeClass("valid");
+                        $("#registracijaObrazec").find('input:visible:eq(5)').addClass("input-validation-error");
+                        vrednostInput.target.setCustomValidity('E-naslov že obstaja!');
+                    } else {
+
+                        $('#errorMessage2').text("E-naslov je obvezen!");
+
+                        vrednostInput.target.setCustomValidity('');
+                    }
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+    </script>
+}

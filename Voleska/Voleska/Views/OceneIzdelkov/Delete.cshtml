@@ -1,0 +1,46 @@
+﻿@model Voleska.Models.OcenaIzdelka
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1 class="text-danger">Izbris</h1>
+<p class="text-danger">@ViewData["ErrorMessage"]</p>
+
+<div class="my-5">
+    <h4>Izbrišem oceno izdelka @Html.DisplayFor(model => model.Izdelek.Ime)?</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Uporabnik:
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ApplicationUser.UserName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Ocena):
+        </dt>
+        <dd class="col-sm-10">
+            @for (int i = 0; i < Model.Ocena; i++)
+            {
+                <span><i class="fa fa-star text-warning" aria-hidden="true"></i></span>
+            }
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Komentar):
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Komentar)
+        </dd>
+        
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ID" />
+        <input type="hidden" value="@Model.IzdelekID" name="izdelekId" id="izdelekId"/>
+        <input type="hidden" value="@ViewBag.TipIzdelka" name="imeTipaIzdelka" id="imeTipaIzdelka" />
+        <input type="submit" value="Izbriši" class="btn btn-danger" /> |
+        
+        <a asp-action="Details" asp-controller="Katalog" asp-route-id="@Model.IzdelekID" asp-route-imeTipaIzdelka="@ViewBag.TipIzdelka" asp-route-naKomentarje="true">Nazaj na podrobnosti izdelka</a>
+    </form>
+</div>

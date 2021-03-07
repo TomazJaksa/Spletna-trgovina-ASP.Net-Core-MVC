@@ -1,0 +1,28 @@
+﻿@model Voleska.Models.TipIzdelka
+
+@{
+    ViewData["Title"] = "Izbriši";
+}
+<nav aria-label="breadcrumb" class="">
+    <ol class="breadcrumb bg-white d-flex justify-content-center">
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-izbira="domov" class="customColor">Domov</a></li>
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Katalog" asp-action="Index" class="customColor">Katalog</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="TipiIzdelkov" class="customColor">Tipi izdelkov</a></li>
+        <li class="breadcrumb-item active">Izbriši</li>
+    </ol>
+</nav>
+<h1 class="text-danger text-center">Izbriši</h1>
+
+<h3 class="text-center">Izbrišem tip izdelka "@Html.DisplayFor(model => model.Ime)"?</h3>
+<div class="justify-content-center d-flex my-4">
+    <img src="~/katalogSlike/@Model.Slika" alt="thumbnail" class="img-thumbnail z-depth-1">
+</div>
+
+<div class="d-flex justify-content-center">   
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ID" />
+        <input type="submit" value="Izbriši" class="btn btn-danger" />
+        
+    </form>
+</div>
+<a asp-action="Index" class="d-flex justify-content-center customColor"><small>Nazaj na seznam</small></a>

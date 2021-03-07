@@ -1,0 +1,137 @@
+﻿
+@model Voleska.Models.Izdelek
+
+@{
+    ViewData["Title"] = "Ustvari";
+}
+
+<nav aria-label="breadcrumb" class="">
+    <ol class="breadcrumb bg-white d-flex justify-content-center">
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-izbira="domov" class="customColor">Domov</a></li>
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Izdelki" asp-action="Index" class="customColor" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-izbranTipIzdelka="@ViewBag.TipIzdelka" asp-route-SearchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje">Izdelki</a></li>
+        <li class="breadcrumb-item active">Ustvari</li>
+    </ol>
+</nav>
+
+
+<h1 class="text-center">Ustvari izdelek</h1>
+
+
+<hr />
+<div class="row justify-content-center d-flex">
+    <div class="col-md-8 ">
+        <form asp-action="Create" class="needs-validation" novalidate>
+
+
+            <div class="form-row">
+                <div class="form-group col-12 col-md-6 md-form md-outline">
+                    <label asp-for="Ime" class="control-label"></label>
+                    <input asp-for="Ime" class="form-control z-depth-1" required />
+                    <div class="valid-tooltip">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip">
+                        Ime je obvezno!
+                    </div>
+                </div>
+
+
+                <div class="form-group col-12 col-md-6 md-form md-outline">
+                    <label asp-for="Cena" class="control-label"></label>
+                    <input asp-for="Cena" class="form-control z-depth-1" type="number" min="0.00" max="10000.00" step="0.01" required />
+                    <div class="valid-tooltip">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip">
+                        Cena je obvezna!
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row mb-2 d-flex justify-content-around">
+
+                <div class=" col-12 md-form md-outline form-group shadow-textarea mb-4">
+
+                    <textarea asp-for="Opis" class="md-textarea form-control p-3 z-depth-1 setScrollbar scrollbar-cyan thin" rows="4" required></textarea>
+                    <label asp-for="Opis" class="control-label mt-2">Kratek opis izdelka...</label>
+                    <div class="valid-tooltip">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip">
+                        Opis je obvezen!
+                    </div>
+                </div>
+
+
+                <div class=" col-12 md-form md-outline form-group shadow-textarea mb-4">
+
+                    <textarea asp-for="Podrobnosti" class="md-textarea form-control p-3 z-depth-1 setScrollbar scrollbar-cyan thin" rows="4" required></textarea>
+                    <label asp-for="Podrobnosti" class="control-label mt-2">Podrobnosti izdelka...</label>
+                    <div class="valid-tooltip">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip">
+                        Podrobnosti so obvezne!
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+            @*
+                <div class="form-group">
+                    <label asp-for="MaterialID" class="control-label"></label>
+                    <select asp-for="MaterialID" class ="form-control" asp-items="ViewBag.MaterialID"></select>
+                </div>
+            *@
+
+            <div class="form-group col-12">
+                <label asp-for="TipIzdelkaID" class="control-label"></label>
+                <select asp-for="TipIzdelkaID" class="form-control" asp-items="ViewBag.TipIzdelkaID"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Ustvari" class="btn btn-primary" /><a asp-action="Index" class="ml-2 customColor" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-izbranTipIzdelka="@ViewBag.TipIzdelka" asp-route-SearchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje">Nazaj na seznam</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+
+
+        $(document).ready(function () {
+
+
+
+        });
+
+
+
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+    </script>
+    }

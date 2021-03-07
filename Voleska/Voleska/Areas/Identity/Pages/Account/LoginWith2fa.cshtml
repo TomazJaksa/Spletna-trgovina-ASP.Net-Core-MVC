@@ -1,0 +1,52 @@
+﻿@page
+@model LoginWith2faModel
+@{
+    ViewData["Title"] = "Dvonivojska avtentikacija (2FA)";
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+<p>Vaša prijava je zaščitena z overitveno aplikacijo. V spodnje polje vnesite avtentikacijsko kodo.</p>
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" asp-route-returnUrl="@Model.ReturnUrl">
+            <input asp-for="RememberMe" type="hidden" />
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group md-form md-outline">
+                <label asp-for="Input.TwoFactorCode">Avtentikacijska koda</label>
+                <input asp-for="Input.TwoFactorCode" class="form-control" autocomplete="off" />
+                <span asp-validation-for="Input.TwoFactorCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label asp-for="Input.RememberMachine">
+                        <input asp-for="Input.RememberMachine" />
+                        Zapomni si to napravo
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Prijava</button>
+            </div>
+        </form>
+    </div>
+</div>
+<p>
+    Nimate dostopa do vaše naprave z avtentikatorjem?
+    Lahko poskusite 
+    <a id="recovery-code-login" asp-page="./LoginWithRecoveryCode" asp-route-returnUrl="@Model.ReturnUrl">vpis z obnovitveno kodo</a>.
+</p>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+@*
+    TWO FACTOR AVTENTIKACIJSKE KODE
+
+    bcedd8b7 716e5681
+    58f1d798 caae83f9
+    dfe10d28 dec4a1e4
+    af91e3b8 31e470e1
+    304823e0 fe8bd9cb
+*@

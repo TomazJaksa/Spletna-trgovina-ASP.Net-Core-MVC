@@ -1,0 +1,122 @@
+﻿@model Voleska.ViewModel.OpcijaEditViewModel
+
+@{
+    ViewData["Title"] = "Uredi";
+}
+<nav aria-label="breadcrumb" class="">
+    <ol class="breadcrumb bg-white d-flex justify-content-center">
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-izbira="domov" class="customColor">Domov</a></li>
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Izdelki" asp-action="Index" class="customColor">Izdelki</a></li>
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Izdelki" asp-action="Details" asp-route-id="@ViewBag.IzdelekId" class="customColor">Podrobnosti</a></li>
+        <li class="breadcrumb-item active">Uredi</li>
+    </ol>
+</nav>
+
+
+
+<h1 class="text-center mb-4">Uredi opcijo</h1>
+<hr />
+
+<div class="row d-flex justify-content-center">
+    <div class="col-md-4">
+        <form asp-action="Edit" enctype="multipart/form-data" class="needs-validation" novalidate>
+
+            <input type="hidden" name="izdelekId" value="@ViewBag.IzdelekId" />
+            <div class="form-group md-form md-outline">
+                <label asp-for="Ime" class="control-label"></label>
+                <input asp-for="Ime" class="form-control" required />
+                <div class="valid-tooltip">
+                    Izgleda okej!
+                </div>
+                <div class="invalid-tooltip">
+                    Ime je obvezno!
+                </div>
+            </div>
+
+
+
+            <div id="prikazSlike" class="d-flex justify-content-center">
+                <img id="output" src="~/katalogSlike/@Model.ObstojecaSlika" asp-append-version="true" class=" z-depth-1 img-thumbnail d-flex justify-content-center" width="290" />
+            </div>
+
+            <div class="form-group pt-2 d-flex justify-content-center">
+                <label for="slika" class="btn btn-info control-label">Spremeni sliko</label>
+                <input type="file" accept="image/*" onchange="loadFile(event)" asp-for="Slika" id="slika" class="form-control" style="display:none" />
+                <span asp-validation-for="Slika" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-row mt-3 d-flex justify-content-center">
+  
+                <div class="form-group form-check mt-2 d-flex justify-content-center align-items-center">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="Zaloga" /> @Html.DisplayNameFor(model => model.Zaloga)
+                    </label>
+                </div>
+
+            </div>
+            <div class="form-group d-flex justify-content-center align-items-center">
+                <input type="submit" value="Posodobi" class="btn btn-primary" /><a asp-action="Details" asp-controller="Izdelki" asp-route-id="@ViewBag.IzdelekId" class="ml-2 customColor">Nazaj</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+
+
+        $(document).ready(function () {
+
+
+
+
+            $('input[type="file"]').change(function () {
+                $('#prikazSlike').removeClass("animated fadeIn");
+                $('#prikazSlike').addClass("d-flex justify-content-center mb-5 mt-4");
+                readURL(this);
+            });
+
+        });
+
+
+
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#output').attr('src', e.target.result);
+                    $('#prikazSlike').removeClass("animated fadeOut");
+                    $('#prikazSlike').addClass("animated fadeIn");
+                    $('#prikazSlike').removeClass("no-display");
+                }
+
+                reader.readAsDataURL(input.files[0]); // convert to base64 string
+            }
+        }
+
+
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+    </script>
+}

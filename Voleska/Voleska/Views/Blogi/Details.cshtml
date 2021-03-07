@@ -1,0 +1,780 @@
+﻿@model Voleska.Models.Blog
+
+@{
+    ViewData["Title"] = "Podrobnosti";
+}
+
+
+
+<!-- Central Modal Odgovor -->
+<div class="modal fade" id="centralModalSm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+
+    <!-- Change class .modal-sm to change the size of the modal -->
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title w-100" id="myModalLabel">Odgovori na komentar osebe <span id="odgovorOsebi"></span></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+
+
+
+
+                <form class="needs-validation" novalidate id="odgovorObrazec">
+                    <input type="hidden" name="komentarIdOdgovor" id="komentarIdOdgovor" value="" />
+                    <input type="hidden" name="odpisovalecId" id="odpisovalecId" value="" />
+                    <input type="hidden" name="blogIdOdgovor" id="blogIdOdgovor" value="" />
+                    <div class="form-outline md-form amber-textarea active-amber-textarea animated fadeIn">
+                        <i class="fas fa-pencil-alt prefix"></i>
+                        <textarea id="vsebinaOdgovor" name="vsebina" class="md-textarea form-control p-3" rows="3" required></textarea>
+                        <label for="vsebina">Dodaj komentar...</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Zapri</button>
+                <button type="button" id="odgovorSubmit" class="btn btn-warning" data-dismiss="modal" onclick="ajaxOdgovori(document.getElementById('vsebinaOdgovor').value, document.getElementById('odpisovalecId').value, document.getElementById('komentarIdOdgovor').value, document.getElementById('blogIdOdgovor').value)"><i class="fa fa-reply mr-2"></i> Odgovori</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Central Modal Odgovor -->
+<!-- Modal Tooltip-->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+
+    <!-- Add .modal-dialog-centered to .modal-dialog to vertically center the modal -->
+    <div class="modal-dialog modal-dialog-centered" role="document">
+
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Izbris komentarja</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Izbrišem izbran komentar?
+            </div>
+
+            <form class="no-display">
+                <input type="hidden" id="komentarId" value="" />
+                <input type="hidden" id="blogId" value="" />
+                <input type="hidden" id="parentId" value="" />
+            </form>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Zapri</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="ajaxDeleteConfirmed(document.getElementById('komentarId').value, document.getElementById('blogId').value,document.getElementById('parentId').value)">Da, izbriši!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<nav aria-label="breadcrumb" class="">
+    <ol class="breadcrumb bg-white d-flex justify-content-center">
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-izbira="domov" class="customColor">Domov</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Blogi" class="customColor"  asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-searchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje">Blogi</a></li>
+        <li class="breadcrumb-item active">Podrobnosti</li>
+    </ol>
+</nav>
+
+<div id="prenosPodatkovLajk" class="no-display">
+    @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.PrenosPodatkovLajkVC), new { })
+</div>
+
+<div id="prenosPodatkovKomentar" class="no-display">
+    @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.PrenosPodatkov2VC), new { })
+</div>
+
+<div id="prenosPodatkovNovKomentar" class="no-display">
+    @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.PrenosPodatkovKomentarVC), new { })
+</div>
+
+<div id="izbrisiKomentar" class="no-display">
+    @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.IzbrisiKomentarVC), new { })
+</div>
+
+<div class="setDim d-flex justify-content-center z-depth-2"
+     style="
+        background: url(/slike/@Model.Slika );
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
+">
+
+    <span class="align-self-center text-center text-white display-3 addShadow">@Html.DisplayFor(model => model.Naslov)</span>
+</div>
+
+@{
+
+    string besedilo = Model.Clanek;
+    string[] clanek = besedilo.Split("<br>");
+    int stOdstavka = 1;
+}
+
+
+<div class="bigLineHeight dosis" id="clanek">
+
+    @foreach (string paragraph in clanek)
+    {
+        <p class="my-5 text-justify dosis fontSize20" id="@stOdstavka">@paragraph</p>
+        stOdstavka++;
+    }
+</div>
+<div class="d-flex justify-content-between align-items-center">
+
+    <div class="d-flex" id="preusmeriNaSeznam">
+        @{
+            @if (User.Identity.IsAuthenticated)
+            {
+                int bloger = 0;
+                int uporabnik = 0;
+
+                @foreach (var lajkBlogov in Model.LajkaniBlogi)
+                {
+                    if (lajkBlogov.ApplicationUserID == ViewBag.UserID)
+                    {
+                        uporabnik = 1;
+                    }
+                    else if (lajkBlogov.ApplicationUserID == ViewBag.BlogerID)
+                    {
+                        bloger = 1;
+                    }
+                }
+
+
+
+                @foreach (var lajkBlogov in Model.LajkaniBlogi)
+                {
+                    var obstaja = (lajkBlogov.ApplicationUserID == ViewBag.UserID) ? true : false;
+
+                    var lajk = (lajkBlogov.Lajk == true && obstaja) ? "disabled" : "";
+                    var dislajk = (lajkBlogov.Lajk == false && obstaja) ? "disabled" : "";
+
+                    if (lajkBlogov.BlogID == Model.ID)
+                    {
+                        if (bloger == 1 && uporabnik == 0)
+                        {
+                            <div id="likeSection-@Model.ID" class="d-flex">
+
+                                @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.LajkVC), new { blogId = lajkBlogov.BlogID, like = lajk, dislike = dislajk, steviloLike = Model.SteviloLike, steviloDislike = Model.SteviloDislike })
+
+                            </div>
+                            break;
+                        }
+
+                        if (obstaja)
+                        {
+                            <div id="likeSection-@Model.ID" class="d-flex">
+
+                                @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.LajkVC), new { blogId = lajkBlogov.BlogID, like = lajk, dislike = dislajk, steviloLike = Model.SteviloLike, steviloDislike = Model.SteviloDislike })
+
+                            </div>
+                        }
+                    }
+
+                }
+
+
+            }
+            else
+            {
+                <div>
+                    <a class="nav-link text-white btn btn-primary" id="login" asp-area="Identity" asp-page="/Account/Login">Vpiši se!</a>
+                </div>
+
+            }
+        }
+    </div>
+    <div class="text-right dosis fontSize20">
+        @Html.DisplayFor(model => model.Bloger),  @Model.Dodan.ToString("dd.MM.yyyy")
+    </div>
+</div>
+
+
+
+@*
+
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.SteviloLike)
+    </dt>
+    <dd class="col-sm-10" id="like-@Model.ID">
+        @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.SteviloLikeVC), new { steviloLike = Model.SteviloLike })
+
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.SteviloDislike)
+    </dt>
+    <dd class="col-sm-10" id="dislike-@Model.ID">
+        @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.SteviloDislikeVC), new { steviloDislike = Model.SteviloDislike })
+    </dd>
+
+*@
+
+@if (User.Identity.IsAuthenticated)
+{
+    <div id="vnosKomentarja" class="mt-5">
+
+        @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.VnosKomentarjaVC))
+
+    </div>
+
+    <button class="btn btn-warning mr-3 ml-0" onclick="return ajaxOddaj(@Model.ID);">
+        <i class="fa fa-comments mr-2" aria-hidden="true"></i> Komentiraj
+    </button>
+}
+
+<div id="seznamKomentarjev">
+
+
+    @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.SeznamKomentarjevVC), new { blogId = Model.ID })
+
+
+</div>
+
+<div class="mt-2">
+    <a asp-action="Index" class="customColor"  asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-searchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje">Nazaj na seznam blogov</a>
+</div>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            urediClanek();
+            $("strong").addClass("font-weight-bold");
+            $("blockquote").addClass("blockquote");
+            $("#clanek").find('img').addClass("z-depth-2 rounded");
+            $("#clanek").find('p').addClass("dosis fontSize20");
+
+
+
+
+
+            /*$(".odgovori").addClass("no-display");*/
+        });
+
+        function urediClanek() {
+            var clanek = [];
+            $("#clanek > p").each((index, elem) => {
+                clanek.push(elem.id);
+            });
+
+
+
+            for (let i = 1; i <= clanek.length;i++) {
+                var vrednost = $("#" + i).text();
+                $("#" + i).html(vrednost);
+            }
+        };
+
+
+        function ajaxOdgovori(vsebina, odpisovalecId, komentarIdOdgovor, blogIdOdgovor) {
+            internalAjaxOdgovori(vsebina, odpisovalecId, komentarIdOdgovor, blogIdOdgovor).then(
+
+                function (value) {
+                    alert(value);
+                    var komentarId = $('#novKomentar').attr("asp-route-komentarAjax");
+                    var komentarIdOdgovor = $("#komentarIdOdgovor").val();
+
+                    alert(komentarId + " zunanja");
+                    ajaxOdgovoriReload(komentarId, blogIdOdgovor, komentarIdOdgovor);
+                },
+
+               
+
+            );
+        }
+
+    async  function internalAjaxOdgovori(vsebina, odpisovalecId, komentarIdOdgovor,  blogIdOdgovor)  {
+            alert("Sem v internal");
+                /*
+                var valdata = $("#odgovorObrazec").serialize();
+                alert(valdata);
+                */
+            var vsebina = vsebina;
+            var odpisovalecId = odpisovalecId;
+            var komentarIdOdgovor = komentarIdOdgovor; // to je komentar id
+            alert(komentarIdOdgovor);
+            var blogIdOdgovor = blogIdOdgovor;
+
+            let mypromise = new Promise(function (myResolve, myReject) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Odgovori", "Komentarji")',
+                    data: { vsebina: vsebina, odpisovalecId: odpisovalecId, komentarIdOdgovor: komentarIdOdgovor, blogIdOdgovor: blogIdOdgovor },
+                    dataType: "html",
+                    success: function (data) {
+
+
+                        alert("Sem v ajaxu.." + data);
+                        $('#prenosPodatkovNovKomentar').html(data);
+
+                        
+                       
+                        
+                        /*
+                        ajaxSeznamReload(komentarId, blogId);
+                        */
+
+                        //ajaxOdgovoriReload(komentarId, blogIdOdgovor, komentarIdOdgovor);
+
+                    },
+                    failure: function (data) {
+
+                        alert(response);
+                    },
+                    error: function (data) {
+                        console.log("Error!");
+                    }
+
+                });
+
+
+
+            });
+
+        let rezultat = await mypromise;
+        alert(rezultat);
+        return rezultat;
+        }
+
+        function ajaxOdgovoriReload(komentarId, blogId, komentarIdOdgovor) {
+            $.ajax({
+                url: '@Url.Action("OdgovoriReload", "Komentarji")',
+                data: { komentarId: komentarIdOdgovor, blogId: blogId},
+                success: function (data) {
+
+                    alert(data);
+                    alert("Bom pripel na: #noviOdgovori-" + komentarIdOdgovor);
+
+                    $("#noviOdgovori-"+komentarIdOdgovor).html(data);
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function prikaziOdgovore(komentarId) {
+
+            //alert(komentarId);
+            alert("Prikazujem odgovore");
+            $("#odgovori-" + komentarId).addClass("animated fadeInUp").removeClass("no-display");
+            var preveri = $("#odgovori-" + komentarId).hasClass('no-display');
+            //alert("#odgovori- imajo class 'no-display': "+preveri);
+
+
+            $("#prikaziOdgovore-" + komentarId).addClass("no-display").removeClass("animated fadeIn slow d-flex justify-content-end align-items-center mr-1");
+            var preveri2 = $("#prikaziOdgovore-" + komentarId).hasClass("no-display");
+           // alert("#prikaziOdgovore- imajo class 'no-display': "+preveri2);
+
+            $("#skrijOdgovore-" + komentarId).addClass("animated fadeIn slow d-flex justify-content-end align-items-center mr-1").removeClass("no-display");
+
+        };
+
+        function skrijOdgovore(komentarId) {
+
+            //alert(komentarId);
+
+
+
+            $("#odgovori-" + komentarId).addClass("no-display").removeClass("animated fadeInUp");
+            var preveri = $("#odgovori-" + komentarId).hasClass('no-display');
+            //alert("#odgovori- imajo class 'no-display': "+preveri);
+
+
+            $("#skrijOdgovore-" + komentarId).addClass("no-display").removeClass("d-flex justify-content-end align-items-center mr-1");
+            var preveri2 = $("#prikaziOdgovore-" + komentarId).hasClass("no-display");
+            // alert("#prikaziOdgovore- imajo class 'no-display': "+preveri2);
+
+            $("#prikaziOdgovore-" + komentarId).addClass("animated fadeIn slow d-flex justify-content-end align-items-center mr-1").removeClass("no-display");
+
+        };
+
+@*BLOGI AJAX*@
+        function ajaxCreate(blogId, like) {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Create", "LajkaniBlogi")',
+                data: {blogId: blogId, like: like},
+                dataType: "html",
+                success: function (data) {
+
+                    $('#prenosPodatkovLajk').html(data);
+
+                    var like = $('#prenosPodatkov-' + blogId).attr("asp-route-likeAjax");
+                    var dislike = $('#prenosPodatkov-' + blogId).attr("asp-route-dislikeAjax");
+                    var steviloDislike = $('#prenosPodatkov-' + blogId).attr("asp-route-steviloDislikeAjax");
+                    var steviloLike = $('#prenosPodatkov-' + blogId).attr("asp-route-steviloLikeAjax");
+
+
+                    ajaxGumbiReload(blogId, like, dislike, steviloLike, steviloDislike);
+                    /*
+                    ajaxSteviloLikeReload(steviloLike, blogId);
+                    ajaxSteviloDislikeReload(steviloDislike, blogId);
+                    */
+                },
+                failure: function (data) {
+
+                    alert(response);
+                },
+                error: function (data) {
+                    console.log("Error!");
+                }
+
+            });
+        }
+
+        function ajaxGumbiReload(blogId, like, dislike, steviloLike, steviloDislike) {
+            $.ajax({
+                url: '@Url.Action("GumbiReload", "LajkaniBlogi")',
+                data: { blogId: blogId, lajk: like, dislajk: dislike, steviloLike: steviloLike, steviloDislike: steviloDislike },
+                success: function (data) {
+
+                    $('#likeSection-' + blogId).html(data);
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        @*
+        function ajaxSteviloLikeReload(steviloLike, blogId) {
+            $.ajax({
+                url: '@Url.Action("SteviloLikeReload", "LajkaniBlogi")',
+                data: { steviloLike: steviloLike },
+                success: function (data) {
+
+                    $('#like-' + blogId).html(data);
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function ajaxSteviloDislikeReload(steviloDislike, blogId) {
+            $.ajax({
+                url: '@Url.Action("SteviloDislikeReload", "LajkaniBlogi")',
+                data: { steviloDislike: steviloDislike },
+                success: function (data) {
+
+                    $('#dislike-' + blogId).html(data);
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+        *@
+
+    @* KOMENTARJI AJAX *@
+
+
+        function ajaxOddaj(blogId) {
+
+            var vsebina;
+            vsebina = $("#vsebina").val();
+            if (vsebina == "") {
+                $('#napaka').html("Vnesite komentar,da oddate komentar...Genius.");
+                $('#napaka').css("display", "block");
+                return false;
+            };
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Create", "Komentarji")',
+                data: { vsebina: vsebina, blogId: blogId },
+                success: function (data) {
+
+                    $('#prenosPodatkovNovKomentar').html(data);
+
+                    var komentarId = $('#novKomentar').attr("asp-route-komentarAjax");
+
+                    ajaxSeznamReload(komentarId, blogId);
+                    ajaxVnosReload();
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+
+
+        }
+
+        function ajaxSeznamReload(komentarId, blogId) {
+            $.ajax({
+                url: '@Url.Action("SeznamReload", "Komentarji")',
+                data: { komentarId: komentarId, blogId: blogId},
+                success: function (data) {
+
+                    $('#seznamKomentarjev').html(data);
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function ajaxVnosReload() {
+            $.ajax({
+                url: '@Url.Action("VnosReload", "Komentarji")',
+                data: { },
+                success: function (data) {
+
+                    $('#vnosKomentarja').html(data);
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+
+
+
+        function ajaxCreateKomentar(komentarId, blogId, like) {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Create", "LajkaniKomentarji")',
+                data: {komentarId: komentarId, blogId: blogId, like: like},
+                dataType: "html",
+                success: function (data) {
+
+                    $('#prenosPodatkovKomentar').html(data);
+
+                    var like = $('#prenosPodatkovKomentar-' + blogId).attr("asp-route-likeAjax");
+                    var dislike = $('#prenosPodatkovKomentar-' + blogId).attr("asp-route-dislikeAjax");
+                    var steviloDislike = $('#prenosPodatkovKomentar-' + blogId).attr("asp-route-steviloDislikeAjax");
+                    var steviloLike = $('#prenosPodatkovKomentar-' + blogId).attr("asp-route-steviloLikeAjax");
+
+                    /*alert(like);
+                    alert(dislike);*/
+
+                    ajaxGumbiKomentarReload(komentarId, blogId, like, dislike,steviloLike, steviloDislike);
+                    /*
+                    ajaxSteviloLikeKomentarReload(steviloLike, komentarId);
+                    ajaxSteviloDislikeKomentarReload(steviloDislike, komentarId);
+                    */
+                },
+                failure: function (data) {
+
+                    alert(response);
+                },
+                error: function (data) {
+                    console.log("Error!");
+                }
+
+            });
+        }
+
+        function ajaxGumbiKomentarReload(komentarId, blogId, like, dislike, steviloLike, steviloDislike) {
+            $.ajax({
+                url: '@Url.Action("GumbiReload", "LajkaniKomentarji")',
+                data: {komentarId: komentarId, blogId: blogId, lajk: like, dislajk: dislike, steviloLike:steviloLike, steviloDislike: steviloDislike },
+                success: function (data) {
+
+                    $('#likeSection2-' + komentarId).html(data);
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+        @*
+        function ajaxSteviloLikeKomentarReload(steviloLike, komentarId) {
+            $.ajax({
+                url: '@Url.Action("SteviloLikeReload", "LajkaniKomentarji")',
+                data: { steviloLike: steviloLike },
+                success: function (data) {
+
+                    $('#like-komentar-' + komentarId).html(data);
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+         function ajaxSteviloDislikeKomentarReload(steviloDislike, komentarId) {
+            $.ajax({
+                url: '@Url.Action("SteviloDislikeReload", "LajkaniKomentarji")',
+                data: { steviloDislike: steviloDislike },
+                success: function (data) {
+
+                    $('#dislike-komentar-' + komentarId).html(data);
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+        *@
+
+        $(function () {
+            $('body').tooltip({ selector: '[data-toggle="tooltip"]' });
+        });
+
+        function izbrisi(komentarId, blogId, parentId) {
+
+            $('#komentarId').val(komentarId);
+            $('#blogId').val(blogId);
+            $('#parentId').val(parentId);
+
+
+        }
+
+
+        function ajaxDeleteConfirmed(komentarId, blogId, parentId) {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeleteConfirmed", "Komentarji")',
+                data: { id: komentarId, blogId: blogId },
+                success: function (data) {
+
+                    $('#izbrisiKomentar').html(data);
+
+                    var izbrisan = $('#izbrisanKomentar').attr("asp-route-komentarAjax");
+
+                    $('#komentar-' + izbrisan).addClass("animated bounceOutLeft");
+                    $('#gumbOdgovori-' + izbrisan).addClass("animated bounceOutLeft");
+                    $('#prikaziOdgovore-' + izbrisan).addClass("animated bounceOutLeft");
+                    $('#skrijOdgovore-' + izbrisan).addClass("animated bounceOutLeft");
+                    $('#odgovori-' + izbrisan).addClass("animated bounceOutLeft");
+                    $('#odgovori-' + izbrisan).find("*").addClass("animated bounceOutLeft");
+                    
+
+                    setTimeout(function () {
+                        $('#komentar-' + izbrisan).remove();
+                        $('#komentar-' + izbrisan).find("*").remove();
+                        $('#gumbOdgovori-' + izbrisan).remove();
+                        $('#prikaziOdgovore-' + izbrisan).remove();
+                        $('#skrijOdgovore-' + izbrisan).remove();
+                        $('#noviOdgovori-' + izbrisan).remove();
+                        $('#odgovori-' + izbrisan).remove();
+                        $('#odgovori-' + izbrisan).find("*").remove();
+                        
+                        ajaxSteviloOdgovorovReload(parentId);
+                        
+                        var poglejKoliko = $("steviloOdgovorov-" + parentId).text();
+                        alert(poglejKoliko);
+                        if (poglejKoliko == 0) {
+                            
+                            $('#prikaziOdgovore-' + parentId).remove();
+                            $('#skrijOdgovore-' + parentId).remove();
+                            
+                            $('#odgovori-' + parentId).remove();
+                        }
+                    }, 700);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function ajaxSteviloOdgovorovReload(komentarId) {
+            $.ajax({
+                url: '@Url.Action("SteviloOdgovorovReload", "Komentarji")',
+                data: { komentarId: komentarId },
+                success: function (data) {
+                    alert(data);
+                    $('#steviloOdgovorov-'+komentarId).html(data);
+
+                },
+                failure: function (response) {
+                    alert("error v Reload ST odgovorov");
+                },
+                error: function (response) {
+                    alert("error v Reload ST odgovorov");
+                }
+            });
+        }
+
+
+
+        function odgovor(oseba, komentarId, odpisovalecId, blogId) {
+            $("#vsebinaOdgovor").val('');
+            $('#odgovorOsebi').text(oseba);
+            $('#komentarIdOdgovor').val(komentarId);
+            $('#odpisovalecId').val(odpisovalecId);
+            $('#blogIdOdgovor').val(blogId);
+        }
+
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+    </script>
+}
