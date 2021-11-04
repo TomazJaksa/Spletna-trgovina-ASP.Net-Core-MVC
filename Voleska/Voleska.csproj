@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>a950ec1d-c908-4746-9fa3-fac64f655b3c</UserSecretsId>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+  <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+</PropertyGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="DocumentFormat.OpenXml" Version="2.11.3" />
+    <PackageReference Include="FsCheck" Version="2.14.3" />
+    <PackageReference Include="LazZiya.ImageResize" Version="3.0.2" />
+    <PackageReference Include="Microsoft.AspNet.Identity.Core" Version="2.2.3" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="3.1.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.1.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
+    <PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.6" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="NHibernate" Version="5.3.3" />
+    <PackageReference Include="RhinoMocks" Version="3.6.1" />
+    <PackageReference Include="SendGrid" Version="9.22.0" />
+    <PackageReference Include="Stripe.net" Version="39.23.0" />
+    <PackageReference Include="TweetinviAPI" Version="5.0.3" />
+    <PackageReference Include="WebGrease" Version="1.6.0" />
+    <PackageReference Include="Xamarin.Forms" Version="4.8.0.1534" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\mdb\" />
+    <Folder Include="wwwroot\jumbotron\" />
+    <Folder Include="wwwroot\katalogSlike\" />
+    <Folder Include="wwwroot\testni\" />
+    <Folder Include="wwwroot\thumbnail\" />
+  </ItemGroup>
+  
+
+
+</Project>

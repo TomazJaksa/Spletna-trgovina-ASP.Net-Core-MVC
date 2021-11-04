@@ -1,0 +1,371 @@
+﻿@model PaginatedList<Voleska.Models.Blog>
+
+@{
+    ViewData["Title"] = "Blogi";
+}
+
+<nav aria-label="breadcrumb" class="">
+    <ol class="breadcrumb bg-white d-flex justify-content-center">
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-izbira="domov" class="customColor">Domov</a></li>
+        <li class="breadcrumb-item active">Blogi</li>
+    </ol>
+</nav>
+
+<h1 class="text-center">Blogi</h1>
+
+@if (User.Identity.IsAuthenticated && User.IsInRole("ADMINISTRATOR"))
+{
+    <p class="m-0 p-0">
+        <a asp-action="Create" class="customColor" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-searchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje"><i class="far fa-plus-square fa-lf mr-2"></i>Ustvari nov blog</a>
+    </p>
+
+}
+
+<div class="row">
+    <div class="col-md-10">
+        <form asp-controller="Blogi" asp-action="Index" method="get" class="">
+            <div class="input-group md-form form-sm form-2 pl-0 d-flex justify-content-center justify-content-md-start">
+                <input class="pt-4 col-7 col-md-4" type="text" id="SearchString" name="searchString" placeholder="Vnesite naslov bloga..." value="@ViewBag.SearchString">
+                
+                <input type="hidden" name="filtriranje" value="@ViewBag.Filtriranje" />
+                
+
+                <div class="input-group-append ml-4">
+                    <button type="submit" class="btn btn-outline-unique2 btn px-2 mx-0">
+                        <span class="mr-1">Iskanje </span>  <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+                    </button>
+                </div>
+                @if (@ViewBag.SearchString != null)
+                {
+                    <div class="d-flex align-self-center ml-sm-3 mt-2 mt-md-0">
+                        <a asp-action="Index" asp-controller="Blogi">Nazaj</a>
+                    </div>
+
+                }
+
+            </div>
+           
+        </form>
+
+
+    </div>
+
+    <div class="col-md-2 d-flex align-items-center justify-content-end ">
+
+        <!-- Split button -->
+        <div class="btn-group orderBy2 mb-3 mb-md-0">
+            <a type="button" class="btn btn-outline-unique2" asp-action="Index" asp-controller="Blogi">
+
+                @if (ViewBag.IzbranFilter == null)
+                {
+                    <span>Razvrščanje</span>
+                }
+                else
+                {
+                    <span>@ViewBag.IzbranFilter</span>
+                }
+
+            </a>
+
+            <button type="button" class="btn btn-outline-unique2 dropdown-toggle px-3" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+
+            <div class="dropdown-menu  poravnaj z-depth-5 p-2">
+                <a class="dropdown-item dropDownCustom hoverable waves-effect waves-light py-2" asp-action="Index" asp-controller="Blogi" asp-route-searchString="@ViewBag.SearchString">Privzeto</a>
+                <a class="dropdown-item dropDownCustom hoverable waves-effect waves-light py-2" asp-action="Index" asp-controller="Blogi" asp-route-searchString="@ViewBag.SearchString" asp-route-filtriranje="datumPadajoce">Najnovejši</a>
+                <a class="dropdown-item dropDownCustom hoverable waves-effect waves-light py-2" asp-action="Index" asp-controller="Blogi" asp-route-searchString="@ViewBag.SearchString" asp-route-filtriranje="datumNarascajoce">Najstarejši</a>
+                <a class="dropdown-item dropDownCustom hoverable waves-effect waves-light py-2" asp-action="Index" asp-controller="Blogi" asp-route-searchString="@ViewBag.SearchString" asp-route-filtriranje="priljubljenostPadajoce">Po priljubljenosti</a>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+<div id="prenosPodatkovLajk" class="no-display">
+    @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.PrenosPodatkovLajkVC), new { })
+</div>
+
+
+
+
+@foreach (var item in Model)
+{
+
+    <!-- Card -->
+    <div class="mb-5 card card-image mb-4 wow animated fadeIn z-depth-3 stretchMe"
+         style="background-image: url(../slike/@item.Slika ); background-position: center center; ">
+
+        <!-- Content -->
+        <div class="text-white text-center d-flex justify-content-center align-items-center rgba-black-strong py-5 px-0">
+            <div class="w-50">
+                <h5 class="text-white"><i class="fas fa-book-open"></i></h5>
+                <h3 class="card-title pt-2 text-warning addShadow "><strong>@Html.DisplayFor(modelItem => item.Naslov)</strong></h3>
+                <p class="bigLineHeight addShadow dosis fontSize20">
+                    @Html.DisplayFor(modelItem => item.Povzetek)
+                </p>
+
+                <a class="btn btn-cyan" asp-action="Details" asp-route-id="@item.ID" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-searchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje"><i class="fab fa-readme mr-2"></i>Preberi</a>
+                @if (User.Identity.IsAuthenticated && User.IsInRole("ADMINISTRATOR"))
+                {
+                    <a class="btn btn-success" asp-action="Edit" asp-route-id="@item.ID" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-searchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje"><i class="fa fa-edit mr-2"></i>Uredi</a>
+                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.ID" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-searchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje"><i class="fa fa-trash mr-2"></i>Izbriši</a>
+
+                }
+
+
+            </div>
+        </div>
+        <div class="d-flex text-white justify-content-between align-items-center bg-dark">
+            @{
+                var margin = "";
+            }
+            @if (User.Identity.IsAuthenticated)
+            {
+                margin = "mx-4";
+            }
+            else
+            {
+                margin = "";
+            }
+
+            <div class="@margin">
+                @{
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        int bloger = 0;
+                        int uporabnik = 0;
+
+                        @foreach (var lajkBlogov in item.LajkaniBlogi)
+                        {
+                            if (lajkBlogov.ApplicationUserID == ViewBag.UserID)
+                            {
+                                uporabnik = 1;
+                            }
+                            else if (lajkBlogov.ApplicationUserID == ViewBag.BlogerID)
+                            {
+                                bloger = 1;
+                            }
+                        }
+
+
+
+                        @foreach (var lajkBlogov in item.LajkaniBlogi)
+                        {
+
+
+
+                            var obstaja = (lajkBlogov.ApplicationUserID == ViewBag.UserID) ? true : false;
+
+                            var lajk = (lajkBlogov.Lajk == true && obstaja) ? "disabled" : "";
+                            var dislajk = (lajkBlogov.Lajk == false && obstaja) ? "disabled" : "";
+
+                            if (bloger == 1 && uporabnik == 0)
+                            {
+
+
+                                <div id="likeSection-@item.ID" class="d-flex">
+
+                                    @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.LajkVC), new { blogId = item.ID, like = lajk, dislike = dislajk, steviloLike = item.SteviloLike, steviloDislike = item.SteviloDislike })
+
+                                </div>
+                                break;
+                            }
+
+                            if (obstaja)
+                            {
+                                <div id="likeSection-@item.ID" class="d-flex">
+
+                                    @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.LajkVC), new { blogId = item.ID, like = lajk, dislike = dislajk, steviloLike = item.SteviloLike, steviloDislike = item.SteviloDislike })
+
+                                </div>
+                            }
+                           
+
+
+
+                        }
+
+
+                    }
+                    else
+                    {
+                        <span>
+                            <a class="nav-link text-white btn btn-outline-warning" id="login" asp-area="Identity" asp-page="/Account/Login">Vpiši se za všečkanje!</a>
+                        </span>
+
+                    }
+                }
+            </div>
+            <div class="mx-4">
+                <span>@Html.DisplayFor(modelItem => item.Bloger), &nbsp; @item.Dodan.ToString("dd.MM.yyyy")</span>
+            </div>
+        </div>
+
+    </div>
+    <!-- Card -->
+
+
+}
+
+
+
+@{
+
+    var prejsnjaStran = 1;
+
+
+    if (ViewBag.StevilkaStrani != null)
+    {
+        prejsnjaStran = ViewBag.StevilkaStrani - 1;
+    }
+    var naslednjaStran = ViewBag.StevilkaStrani + 1;
+
+    if (ViewBag.StevilkaStrani == null)
+    {
+        naslednjaStran = 2;
+    }
+
+    var izklopi = "";
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination pg-teal">
+            @if (!@Model.HasPreviousPage)
+            {
+                izklopi = "text-muted izklopi";
+            }
+            <li class="page-item">
+                <a class="page-link @izklopi pl-0" asp-route-stevilkaStrani="@prejsnjaStran" asp-route-searchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje">Nazaj</a>
+            </li>
+            @for (var i = 1; i <= Model.TotalPages; i++)
+            {
+                if (i == @Model.PageIndex)
+                {
+                    <li class="page-item active">
+                        <a class="page-link" asp-route-kliknjenLinkStrani="@i" asp-route-stevilkaStrani="@i" asp-route-searchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje">@i <span class="sr-only">(current)</span></a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item"><a class="page-link" asp-route-kliknjenLinkStrani="@i" asp-route-stevilkaStrani="@i" asp-route-searchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje">@i</a></li>
+                }
+
+
+
+            }
+
+            @if (@Model.HasNextPage)
+            {
+                izklopi = "";
+            }
+            else
+            {
+                izklopi = "text-muted izklopi";
+            }
+            <li class="page-item ">
+                <a class="page-link @izklopi" asp-route-stevilkaStrani="@naslednjaStran" asp-route-searchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje">Naprej</a>
+            </li>
+        </ul>
+    </nav>
+
+}
+
+
+
+@section Scripts {
+    <script>
+      
+        function ajaxCreate(blogId, like) {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Create", "LajkaniBlogi")',
+                data: {blogId: blogId, like: like},
+                dataType: "html",
+                success: function (data) {
+
+                    $('#prenosPodatkovLajk').html(data);
+
+                    var like = $('#prenosPodatkov-' + blogId).attr("asp-route-likeAjax");
+                    var dislike = $('#prenosPodatkov-' + blogId).attr("asp-route-dislikeAjax");
+                    var steviloDislike = $('#prenosPodatkov-' + blogId).attr("asp-route-steviloDislikeAjax");
+                    var steviloLike = $('#prenosPodatkov-' + blogId).attr("asp-route-steviloLikeAjax");
+
+
+
+                    ajaxGumbiReload(blogId, like, dislike, steviloLike, steviloDislike);
+                   //ajaxSteviloLikeReload(steviloLike, blogId);
+                    //ajaxSteviloDislikeReload(steviloDislike, blogId);
+
+                },
+                failure: function (data) {
+
+                    alert(response);
+                },
+                error: function (data) {
+                    console.log("Error!");
+                }
+
+            });
+        }
+
+        function ajaxGumbiReload(blogId, like, dislike, steviloLike, steviloDislike) {
+            $.ajax({
+                url: '@Url.Action("GumbiReload", "LajkaniBlogi")',
+                data: { blogId: blogId, lajk: like, dislajk: dislike, steviloLike:steviloLike, steviloDislike:steviloDislike },
+                success: function (data) {
+
+                    $('#likeSection-' + blogId).html(data);
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function ajaxSteviloLikeReload(steviloLike, blogId) {
+            $.ajax({
+                url: '@Url.Action("SteviloLikeReload", "LajkaniBlogi")',
+                data: { steviloLike: steviloLike },
+                success: function (data) {
+
+                    $('#like-' + blogId).html(data);
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+         function ajaxSteviloDislikeReload(steviloDislike, blogId) {
+            $.ajax({
+                url: '@Url.Action("SteviloDislikeReload", "LajkaniBlogi")',
+                data: { steviloDislike: steviloDislike },
+                success: function (data) {
+
+                    $('#dislike-' + blogId).html(data);
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+
+
+    </script>
+}

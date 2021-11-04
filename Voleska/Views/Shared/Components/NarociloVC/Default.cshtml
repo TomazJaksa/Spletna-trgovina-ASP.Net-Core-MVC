@@ -1,0 +1,83 @@
+﻿@model Voleska.Models.Narocilo
+
+<td class="align-middle text-center ">
+    <img id="imageToSwap" src="~/thumbnail/@Model.Opcija.Slika" class="img-fluid z-depth-1 rounded" asp-append-version="true" />
+</td>
+<td class="align-middle">
+    @Html.DisplayFor(modelItem => Model.Izdelek.Ime)
+</td>
+<td class="align-middle">
+    @Html.DisplayFor(modelItem => Model.Opcija.Ime)
+</td>
+
+@if (ViewBag.Blagajna != true)
+{
+    <td class="align-middle text-center">
+
+        <!-- Button trigger modal -->
+        <span data-toggle="modal" data-target="#exampleModalCenter">
+            <span class="no-display" id="podajOpombo-@Model.ID">@Model.Opombe</span>
+            <button type="button" class="btn-sm btn-outline-primary izbira" onclick="prenesiPodatke(@Model.ID, '@Model.Izdelek.Ime @Model.Opcija.Ime', document.getElementById('podajOpombo-@Model.ID').innerHTML)">
+                <i class="fas fa-pencil-alt prefix mr-2"></i> Uredi opombo
+            </button>
+        </span>
+
+
+    </td>
+}
+
+<td class="align-middle">
+    @Html.DisplayFor(modelItem => Model.Material.Ime)
+</td>
+<td class="align-middle" s>
+
+    @string.Format(new System.Globalization.CultureInfo("sl-SI"), "{0:C}", Model.Izdelek.Cena)
+</td>
+
+@if (ViewBag.Blagajna != true)
+{
+    <td class="align-middle">
+
+
+
+
+
+        <div class="d-flex justify-content-center">
+
+            <button id="zmanjsajStevilo-@Model.ID" class="zmanjsajStevilo minus" data-narociloId="@Model.ID" onclick="ajaxZmanjsajStevilo(@Model.ID)">-</button>
+
+
+
+
+            <span class="kolicina p-2" id="trenutnaKolicina-@Model.ID">
+                @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.KolicinaVC), new { kolicina = Model.Kolicina, narociloId = Model.ID })
+            </span>
+
+
+            <div id="trenutnaKolicina-@Model.ID" class="no-display">
+                @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.PrenosPodatkovVC), new { })
+            </div>
+
+
+            <button id="povecajStevilo-@Model.ID" class="povecajStevilo plus" data-narociloId="@Model.ID" onclick="ajaxPovecajStevilo(@Model.ID)">+</button>
+
+        </div>
+
+
+
+    </td>
+}
+<td id="znesek-@Model.ID" class="align-middle">
+    @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.ZnesekVC), new { znesek = Model.Znesek, narociloId = Model.ID })
+</td>
+
+
+
+@if (ViewBag.Blagajna != true)
+{
+    <td class="align-middle">
+
+        <button id="odstrani-@Model.ID" class="btn-sm btn-outline-danger izbira" onclick="ajaxOdstraniIzKosarice(@Model.ID)"><i class="fa fa-trash mr-2"></i> Odstrani</button>
+
+    </td>
+}

@@ -1,0 +1,38 @@
+﻿@model Voleska.Models.Material
+
+@{
+    ViewData["Title"] = "Izbriši";
+}
+<nav aria-label="breadcrumb" class="">
+    <ol class="breadcrumb bg-white d-flex justify-content-center">
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-izbira="domov" class="customColor">Domov</a></li>
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Katalog" asp-action="Index" class="customColor">Katalog</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Materiali" class="customColor">Materiali</a></li>
+        <li class="breadcrumb-item active">Izbriši</li>
+    </ol>
+</nav>
+
+<h1 class="text-danger text-center">Izbriši</h1>
+
+<h3 class="text-center">Izbrišem material "@Html.DisplayFor(model => model.Ime)"?</h3>
+<hr />
+<div class="row d-flex justify-content-center">
+    
+    <div class="card bg-light mt-4 mb-5" style="max-width: 20rem;">
+        <div class="card-header">@Html.DisplayFor(model => model.Ime)</div>
+        <div class="card-body">
+            
+            <p class="card-text"> @Html.DisplayFor(model => model.Opis)</p>
+        </div>
+    </div>
+</div>
+
+
+<div class="d-flex justify-content-center">
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ID" />
+        <input type="submit" value="Izbriši" class="btn btn-danger" />
+
+    </form>
+</div>
+<a asp-action="Index" class="d-flex justify-content-center customColor">Nazaj na seznam</a>

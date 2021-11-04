@@ -1,0 +1,153 @@
+﻿@model Voleska.Areas.Identity.Data.ApplicationUser
+
+@{
+    ViewData["Title"] = "Podrobnosti";
+}
+
+<nav aria-label="breadcrumb" class="">
+    <ol class="breadcrumb bg-white d-flex justify-content-center">
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-izbira="domov" class="customColor">Domov</a></li>
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Uporabniki" asp-action="Index" class="customColor" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-searchString4="@ViewBag.SearchString4" asp-route-filtriranje="@ViewBag.Filtriranje">Uporabniki</a></li>
+        <li class="breadcrumb-item active">Podrobnosti</li>
+    </ol>
+</nav>
+
+<h1 class="text-center mb-3">Podrobnosti</h1>
+
+<hr />
+<div>
+  
+    <div class="table-responsive text-nowrap my-5 z-depth-1 rounded">
+
+
+        <table class="table table-striped table-hover m-0">
+            <thead class="black text-white">
+
+                <tr>
+                    <th scope="col">@Html.DisplayName("Uporabniško ime")</th>
+                    <th scope="col">@Html.DisplayName("E-naslov")</th>
+                    <th scope="col">@Html.DisplayNameFor(model => model.Ime)</th>
+                    <th scope="col">@Html.DisplayNameFor(model => model.Priimek)</th>
+                    <th scope="col" >@Html.DisplayName("Telefon")</th>
+                    <th scope="col">@Html.DisplayNameFor(model => model.Dodan)</th>
+                    <th scope="col">@Html.DisplayNameFor(model => model.Posodobljen)</th>
+                    <th scope="col" class="text-center">@Html.DisplayNameFor(model => model.Aktiven)</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Html.DisplayFor(model => model.UserName)</td>
+                    <td>@Html.DisplayFor(model => model.Email)</td>
+                    <td>
+                        @if (Model.Ime == null)
+                        {
+                            <span>Ni podatka</span>
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(model => model.Ime)
+                        }
+
+                    </td>
+                    <td>
+                        @if (Model.Priimek == null)
+                        {
+                            <span>Ni podatka</span>
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(model => model.Priimek)
+                        }
+                    </td>
+
+                    <td class="">@if (Model.PhoneNumber == null)
+                    {<span>Ni podatka</span>}
+                    else
+                    {@Html.DisplayFor(model => model.PhoneNumber)}</td>
+
+                    <td> @Model.Dodan.ToString("dd.MM.yyyy, HH:mm")</td>
+                    <td> @Model.Posodobljen.ToString("dd.MM.yyyy, HH:mm")</td>
+
+                    <td class="text-center">@Html.DisplayFor(model => model.Aktiven)</td>
+
+                </tr>
+
+            </tbody>
+        </table>
+
+    </div>
+
+    <h5 class="text-center my-3">@Html.DisplayNameFor(model => model.Naslov)</h5>
+
+    <div class="table-responsive text-nowrap mb-4 z-depth-1 rounded">
+
+
+        <table class="table table-striped table-hover m-0">
+            <thead class="black text-white">
+
+                <tr>
+                    <th scope="col">@Html.DisplayName("Ulica")</th>
+                    <th scope="col">@Html.DisplayName("Hišna številka")</th>
+                    <th scope="col" >@Html.DisplayName("Kraj")</th>
+                    <th scope="col" class="text-center">@Html.DisplayName("Poštna številka")</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        @if (Model.Naslov.Ulica == null)
+                        {
+                            <span>Ni podatka</span>
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(model => model.Naslov.Ulica)
+                        }
+
+                    </td>
+                    <td>
+                        @if (Model.Naslov.HisnaStevilka == null)
+                        {
+                            <span>Ni podatka</span>
+                        }
+                        else
+                        {
+
+                            @Html.DisplayFor(model => model.Naslov.HisnaStevilka)
+                        }
+                    </td>
+
+                    <td >
+                        @if (Model.Naslov.Posta.Kraj == null)
+                        {
+                            <span>Ni podatka</span>
+                        }
+                        else
+                        {
+
+                            @Html.DisplayFor(model => model.Naslov.Posta.Kraj)
+                        }
+                    </td>
+                    <td class="text-center">
+                        @if (Model.Naslov.Posta.PostnaStevilka == null)
+                        {
+                            <span>Ni podatka</span>
+                        }
+                        else
+                        {
+
+                            @Html.DisplayFor(model => model.Naslov.Posta.PostnaStevilka)
+                        }
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+    </div>
+</div>
+    <div class="text-center">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="customColor">Uredi</a> |
+        <a asp-action="Index" class="customColor" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-searchString4="@ViewBag.SearchString4" asp-route-filtriranje="@ViewBag.Filtriranje">Nazaj na seznam</a>
+    </div>

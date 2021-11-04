@@ -1,0 +1,437 @@
+﻿@model PaginatedList<Voleska.Models.Transakcija>
+
+@{
+    ViewData["Title"] = "Transakcije";
+}
+
+
+<nav aria-label="breadcrumb" class="">
+    <ol class="breadcrumb bg-white d-flex justify-content-center">
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-izbira="domov" class="customColor">Domov</a></li>
+        <li class="breadcrumb-item active">Transakcije</li>
+    </ol>
+</nav>
+
+<h1 class="text-center mb-5">Transakcije</h1>
+
+@{
+    var polje = "Uporabniško ime...";
+    var polje2 = "Ime...";
+    var polje3 = "Priimek...";
+
+    if (ViewBag.SearchString != null)
+    {
+        polje = "";
+    }
+
+    if (ViewBag.SearchString2 != null)
+    {
+        polje2 = "";
+    }
+
+    if (ViewBag.SearchString3 != null)
+    {
+        polje3 = "";
+    }
+    var radio1 = ViewBag.VseTransakcije;
+    var radio2 = ViewBag.Prilagodi;
+
+    string check1, check2, check3;
+    check1 = check2 = check3 = "";
+
+    if (ViewBag.Zakljuceno != null)
+    {
+        check1 = "checked";
+
+
+    }
+
+    if (ViewBag.Odposlano != null)
+    {
+        check2 = "checked";
+
+    }
+
+    if (ViewBag.VTeku != null)
+    {
+        check3 = "checked";
+
+    }
+
+    var preklop = "disabled";
+
+
+    <div class="row">
+        
+            <form class="d-flex align-items-center flex-column flex-xl-row col-xl-8" asp-controller="Transakcije" asp-action="Index" method="get">
+
+                <div class="pl-0 pr-3 pb-3 d-flex col-12 col-xl-4">
+
+                    <div class=" d-flex flex-column justify-content-end mr-4">
+
+
+                        <div class="form-check form-check">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="izborTransakcij"
+                                   id="prilagodi"
+                                   value="prilagodi" @radio2 />
+                            <label class="form-check-label" for="prilagodi">Prilagodi</label>
+
+
+
+                            @if (ViewBag.Prilagodi == "checked")
+                            {
+                                preklop = "";
+
+                            }
+
+                        </div>
+
+                        <div class="form-check form-check">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="izborTransakcij"
+                                   id="vseTransakcije"
+                                   value="vseTransakcije" @radio1 />
+                            <label class="form-check-label" for="vseTransakcije">Vse transakcije</label>
+                        </div>
+
+                    </div>
+
+                    <div id="hideCheckboxes" class="">
+
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   name="izbira1"
+                                   value="zakljuceno"
+                                   id="zakljuceno" @check1 @preklop />
+                            <label class="form-check-label" for="zakljuceno">
+                                Zaključeno
+                            </label>
+                        </div>
+                        <div class="form-check ">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   name="izbira2"
+                                   value="odposlano"
+                                   id="odposlano" @check2 @preklop />
+                            <label class="form-check-label" for="odposlano">
+                                Odposlano
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   name="izbira3"
+                                   value="vTeku"
+                                   id="vTeku" @check3 @preklop />
+                            <label class="form-check-label" for="vTeku">
+                                V teku
+                            </label>
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+                <input type="hidden" name="prejsnjaVrednostIzbora" value="@ViewBag.PrejsnjaVrednostIzbora" />
+                <div class="w-100"></div>
+                <div class="d-flex flex-column flex-xl-row mr-1 col-12 p-0">
+                    <div class="input-group md-form form-sm form-2 col-xl-2 col-12 mb-0">
+                        <input type="text" class="p-2 col-12" id="SearchString" name="searchString" value="@ViewBag.SearchString">
+                        <label for="SearchString" class="ml-3">Uporabniško ime...</label>
+                    </div>
+                    <div class="input-group md-form form-sm form-2 col-xl-2 col-12 mb-0">
+                        <input type="text" class="p-2 col-12" id="SearchString2" name="searchString2" value="@ViewBag.SearchString2">
+                        <label for="SearchString2" class="ml-3">Ime...</label>
+                    </div>
+                    <div class="input-group md-form form-sm form-2 col-xl-2 col-12 mb-0">
+                        <input type="text" class="p-2 col-12" id="SearchString3" name="searchString3" value="@ViewBag.SearchString3">
+                        <label for="SearchString3" class="ml-3">Priimek...</label>
+                    </div>
+
+                    <input type="hidden" name="filtriranje" value="@ViewBag.Filtriranje" />
+                    <div class="input-group-append mt-2 ml-xl-4 d-flex align-items-center col-xl-3 col-12 pl-1">
+                        <button type="submit" class=" btn btn-outline-unique2 btn px-2 mx-0 d-flex align-items-center" style="display: inline-block; height: 45px;">
+                            <span class="mr-1">Iskanje </span>  <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+                        </button>
+                        @if (@ViewBag.SearchString != null || @ViewBag.SearchString2 != null || @ViewBag.SearchString3 != null || ViewBag.Zakljuceno != null || ViewBag.Odposlano != null || ViewBag.VTeku != null)
+                        {
+                            <div><a asp-action="Index" asp-controller="Transakcije" class="ml-2 customColor">Nazaj</a></div>
+                        }
+                    </div>
+
+                </div>
+                   
+
+            </form>
+
+
+        
+        <div class="col-xl-4 d-flex align-items-center justify-content-end">
+            <!-- Split button -->
+            <div class="btn-group orderBy2 mb-3 mb-md-0">
+                <a type="button" class="btn btn-outline-unique2 ml-0" asp-action="Index" asp-controller="Transakcije">
+
+                    @if (ViewBag.IzbranFilter == null)
+                    {
+                        <span>Razvrščanje</span>
+                    }
+                    else
+                    {
+                        <span>@ViewBag.IzbranFilter</span>
+                    }
+
+                </a>
+
+                <button type="button" class="btn btn-outline-unique2 dropdown-toggle px-3 mr-0 " id="dropBtn" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+
+                <div class="dropdown-menu  poravnaj z-depth-5 p-2" id="slideMe">
+                    <a class="dropdown-item dropDownCustom hoverable waves-effect waves-light py-2" asp-action="Index" asp-controller="Transakcije" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-izborTransakcij="@ViewBag.IzborTransakcij" asp-route-prejsnjaVrednostIzbora="@ViewBag.PrejsnjaVrednostIzbora" asp-route-izbira1="@ViewBag.Zakljuceno" asp-route-izbira2="@ViewBag.Odposlano" asp-route-izbira3="@ViewBag.VTeku">Privzeto</a>
+                    <a class="dropdown-item dropDownCustom hoverable waves-effect waves-light py-2" asp-action="Index" asp-controller="Transakcije" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="datumPadajoce" asp-route-izborTransakcij="@ViewBag.IzborTransakcij" asp-route-prejsnjaVrednostIzbora="@ViewBag.PrejsnjaVrednostIzbora" asp-route-izbira1="@ViewBag.Zakljuceno" asp-route-izbira2="@ViewBag.Odposlano" asp-route-izbira3="@ViewBag.VTeku">Najnovejše</a>
+                    <a class="dropdown-item dropDownCustom hoverable waves-effect waves-light py-2" asp-action="Index" asp-controller="Transakcije" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="datumNarascajoce" asp-route-izborTransakcij="@ViewBag.IzborTransakcij" asp-route-prejsnjaVrednostIzbora="@ViewBag.PrejsnjaVrednostIzbora" asp-route-izbira1="@ViewBag.Zakljuceno" asp-route-izbira2="@ViewBag.Odposlano" asp-route-izbira3="@ViewBag.VTeku">Najstarejše</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}
+
+
+
+<div class="mt-3 table-responsive text-nowrap mb-4 z-depth-1 rounded">
+    <table class="table table-hover m-0">
+        <thead class="black text-white">
+            <tr>
+                <th>
+                    @Html.DisplayName("Skupni znesek")
+                </th>
+                <th>
+                    @Html.DisplayName("Dodano")
+                </th>
+                <th>
+                    @Html.DisplayName("Uporabniško ime")
+                </th>
+                <th>
+                    @Html.DisplayName("Ime")
+                </th>
+                <th>
+                    @Html.DisplayName("Priimek")
+                </th>
+                <th>
+                    @Html.DisplayName("Zaključeno")
+                </th>
+                <th>
+                    @Html.DisplayName("Podrobnosti")
+                </th>
+                <th class="text-center">
+                    @Html.DisplayName("Status")
+                </th>
+                <th>
+
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var status = "";
+                var link = "";
+                var gumb = "";
+
+                @foreach (var item in Model)
+                {
+                    @if (item.Zakljuceno == true)
+                    {
+                        gumb = "btn-light";
+                        status = "bg-primary text-dark";
+                        link = "text-light";
+
+                        @if (item.Odposlano == true)
+                        {
+                            status = "bg-success text-light";
+                        }
+                    }
+                    else
+                    {
+
+                        status = "bg-light";
+                        link = "text-dark";
+                        gumb = " btn-warning";
+                    };
+                    <tr class="@status " id="transakcija-@item.ID">
+                        <td class="align-middle">
+                            
+                            @string.Format(new System.Globalization.CultureInfo("sl-SI"), "{0:C}",item.SkupniZnesek)
+
+                        </td>
+                        <td class="align-middle">
+                            @item.Dodan.ToString("dd.MM.yyyy, HH:mm")
+                        </td>
+                        <td class="align-middle">
+                            @Html.DisplayFor(modelItem => item.ApplicationUser.UserName)
+                        </td>
+                        <td class="align-middle">
+                            @Html.DisplayFor(modelItem => item.ApplicationUser.Ime)
+                        </td>
+                        <td class="align-middle">
+                            @Html.DisplayFor(modelItem => item.ApplicationUser.Priimek)
+                        </td>
+                        <td class="align-middle">
+                            @if (item.Zakljuceno == true)
+                            {
+                                <span>Plačano</span>
+                            }
+                            else
+                            {
+                                <span>V teku</span>
+                            }
+                        </td>
+                        <td class="align-middle">
+                            <a class=" text-black btn-sm @gumb" asp-action="Details" asp-route-id="@item.ID" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="@ViewBag.Filtriranje" asp-route-izborTransakcij="@ViewBag.IzborTransakcij" asp-route-prejsnjaVrednostIzbora="@ViewBag.PrejsnjaVrednostIzbora" asp-route-izbira1="@ViewBag.Zakljuceno" asp-route-izbira2="@ViewBag.Odposlano" asp-route-izbira3="@ViewBag.VTeku">Podrobnosti</a>
+                        </td>
+
+
+
+                        <!--
+                            <a class="@link" asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                        -->
+
+
+                        @if (item.Zakljuceno == true)
+                        {
+                            @if (item.Odposlano == true)
+                            {
+                                <td class="text-center align-middle">
+                                    <span>Odposlano<i class="fa fa-check text-white ml-3 "></i></span>
+                                </td>
+                                <td class="text-center align-middle">
+                                    <a class="text-black btn-sm btn-warning ml-3 razveljavi" asp-action="Razveljavi" asp-route-id="@item.ID" id="@item.ID" asp-route-stevilkaStrani="@Model.PageIndex" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="@ViewBag.Filtriranje" asp-route-izborTransakcij="@ViewBag.IzborTransakcij" asp-route-prejsnjaVrednostIzbora="@ViewBag.PrejsnjaVrednostIzbora" asp-route-izbira1="@ViewBag.Zakljuceno" asp-route-izbira2="@ViewBag.Odposlano" asp-route-izbira3="@ViewBag.VTeku">Razveljavi<i class="fa fa-undo ml-3"></i></a>
+
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="text-center align-middle">
+                                    <a class="text-black btn-sm btn-warning odposlji" asp-action="Odposlji" asp-route-id="@item.ID" id="@item.ID" asp-route-stevilkaStrani="@Model.PageIndex" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="@ViewBag.Filtriranje" asp-route-izborTransakcij="@ViewBag.IzborTransakcij" asp-route-prejsnjaVrednostIzbora="@ViewBag.PrejsnjaVrednostIzbora" asp-route-izbira1="@ViewBag.Zakljuceno" asp-route-izbira2="@ViewBag.Odposlano" asp-route-izbira3="@ViewBag.VTeku">Odpošlji</a>
+                                </td>
+                                <td>
+                                </td>
+                            }
+
+                        }
+                        else
+                        {
+                            <td class="text-center align-middle">
+                                <span><i class="fa fa-clock-o"></i></span>
+                            </td>
+                            <td></td>
+                        }
+                        <!--|<a class="@link" asp-action="Delete" asp-route-id="@item.ID">Delete</a>    -->
+
+
+                    </tr>
+
+                }
+            }
+
+        </tbody>
+    </table>
+</div>
+@{
+
+    var prejsnjaStran = 1;
+
+
+    if (ViewBag.StevilkaStrani != null)
+    {
+        prejsnjaStran = ViewBag.StevilkaStrani - 1;
+    }
+    var naslednjaStran = ViewBag.StevilkaStrani + 1;
+
+    if (ViewBag.StevilkaStrani == null)
+    {
+        naslednjaStran = 2;
+    }
+
+    var izklopi = "";
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination pg-teal">
+            @if (!@Model.HasPreviousPage)
+            {
+                izklopi = "text-muted izklopi";
+            }
+            <li class="page-item">
+                <a class="pl-0 page-link @izklopi" asp-route-stevilkaStrani="@prejsnjaStran" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="@ViewBag.Filtriranje" asp-route-izborTransakcij="@ViewBag.IzborTransakcij" asp-route-prejsnjaVrednostIzbora="@ViewBag.PrejsnjaVrednostIzbora" asp-route-izbira1="@ViewBag.Zakljuceno" asp-route-izbira2="@ViewBag.Odposlano" asp-route-izbira3="@ViewBag.VTeku">Nazaj</a>
+            </li>
+            @for (var i = 1; i <= Model.TotalPages; i++)
+            {
+                if (i == @Model.PageIndex)
+                {
+                    <li class="page-item active">
+                        <a class="page-link" asp-route-kliknjenLinkStrani="@i" asp-route-stevilkaStrani="@i" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="@ViewBag.Filtriranje" asp-route-izborTransakcij="@ViewBag.IzborTransakcij" asp-route-prejsnjaVrednostIzbora="@ViewBag.PrejsnjaVrednostIzbora" asp-route-izbira1="@ViewBag.Zakljuceno" asp-route-izbira2="@ViewBag.Odposlano" asp-route-izbira3="@ViewBag.VTeku">@i <span class="sr-only">(current)</span></a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item"><a class="page-link" asp-route-kliknjenLinkStrani="@i" asp-route-stevilkaStrani="@i" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="@ViewBag.Filtriranje" asp-route-izborTransakcij="@ViewBag.IzborTransakcij" asp-route-prejsnjaVrednostIzbora="@ViewBag.PrejsnjaVrednostIzbora" asp-route-izbira1="@ViewBag.Zakljuceno" asp-route-izbira2="@ViewBag.Odposlano" asp-route-izbira3="@ViewBag.VTeku">@i</a></li>
+                }
+
+
+
+            }
+
+            @if (@Model.HasNextPage)
+            {
+                izklopi = "";
+            }
+            else
+            {
+                izklopi = "text-muted izklopi";
+            }
+            <li class="page-item ">
+                <a class="page-link @izklopi" asp-route-stevilkaStrani="@naslednjaStran" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="@ViewBag.Filtriranje" asp-route-izborTransakcij="@ViewBag.IzborTransakcij" asp-route-prejsnjaVrednostIzbora="@ViewBag.PrejsnjaVrednostIzbora" asp-route-izbira1="@ViewBag.Zakljuceno" asp-route-izbira2="@ViewBag.Odposlano" asp-route-izbira3="@ViewBag.VTeku">Naprej</a>
+            </li>
+        </ul>
+    </nav>
+
+}
+
+
+<script>
+
+    $(document).ready(function () {
+
+
+        // Disable checkbox
+        $("input[value='vseTransakcije']").click(function () {
+
+            $("input[name='izbira1']").prop('disabled', true);
+            $("input[name='izbira2']").prop('disabled', true);
+            $("input[name='izbira3']").prop('disabled', true);
+
+
+
+        });
+
+        // Enable checkbox
+        $("input[value='prilagodi']").click(function () {
+
+            $("input[name='izbira1']").prop('disabled', false);
+            $("input[name='izbira2']").prop('disabled', false);
+            $("input[name='izbira3']").prop('disabled', false);
+        });
+
+
+
+    });
+
+   
+
+</script>

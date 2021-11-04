@@ -1,0 +1,74 @@
+﻿@model Voleska.Areas.Identity.Data.ApplicationRole
+
+@{
+    ViewData["Title"] = "Uredi";
+}
+
+<nav aria-label="breadcrumb" class="">
+    <ol class="breadcrumb bg-white d-flex justify-content-center">
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-izbira="domov" class="customColor">Domov</a></li>
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Uporabniki" asp-action="Index" class="customColor">Uporabniki</a></li>
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Administration" asp-action="Index" class="customColor">Vloge</a></li>
+        <li class="breadcrumb-item active">Izbriši</li>
+    </ol>
+</nav>
+
+
+<h1 class="text-center mb-3">Uredi</h1>
+
+<hr />
+<div class="row justify-content-center">
+    <div class="col-md-4">
+        <form asp-action="Edit" method="post" asp-controller="Administration" class=" needs-validation" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group md-form md-outline">
+                <label asp-for="Id" class="control-label"></label>
+                <input disabled asp-for="Id" class="form-control z-depth-1" />
+               
+            </div>
+            <div class="form-group md-form md-outline">
+                <label asp-for="Name" class="control-label">Ime</label>
+                <input asp-for="Name" class="form-control z-depth-1" required/>
+                
+                <div class="valid-tooltip">
+                    Izgleda okej!
+                </div>
+                <div class="invalid-tooltip">
+                    Ime vloge je obvezno!
+                </div>
+            </div>
+
+            <div class="form-group text-center">
+                <input type="submit" value="Shrani" class="btn btn-primary" /><a asp-action="Index" class="customColor ml-2">Nazaj</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+    </script>
+}

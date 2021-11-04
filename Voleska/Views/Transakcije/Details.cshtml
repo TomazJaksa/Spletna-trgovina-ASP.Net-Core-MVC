@@ -1,0 +1,171 @@
+﻿@model Voleska.Models.Transakcija
+
+@{
+    ViewData["Title"] = "Podrobnosti";
+}
+
+<nav aria-label="breadcrumb" class="">
+    <ol class="breadcrumb bg-white d-flex justify-content-center">
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-izbira="domov" class="customColor">Domov</a></li>
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Transakcije" asp-action="Index" asp-route-izbira="domov" class="customColor" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="@ViewBag.Filtriranje" asp-route-izborTransakcij="@ViewBag.IzborTransakcij" asp-route-prejsnjaVrednostIzbora="@ViewBag.PrejsnjaVrednostIzbora" asp-route-izbira1="@ViewBag.Zakljuceno" asp-route-izbira2="@ViewBag.Odposlano" asp-route-izbira3="@ViewBag.VTeku">Transakcije</a></li>
+        <li class="breadcrumb-item active">Podrobnosti</li>
+    </ol>
+</nav>
+
+
+
+<h1 class="text-center">Podrobnosti</h1>
+
+<div>
+    <hr />
+
+    <div class="table-responsive text-nowrap my-5 z-depth-1 rounded">
+
+
+        <table class="table table-striped table-hover m-0">
+            <thead class="black text-white">
+
+                <tr>
+                    <th scope="col">@Html.DisplayName("Naročnik")</th>
+                    <th scope="col">@Html.DisplayNameFor(model => model.ApplicationUser.Naslov)</th>
+                    <th scope="col">@Html.DisplayName("Datum")</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(model => model.ApplicationUser.UserName) <span>(@Model.ApplicationUser.Ime  @Model.ApplicationUser.Priimek)</span>
+                    </td>
+                    <td>
+                        @if (Model.ApplicationUser.Naslov.Ulica == null || Model.ApplicationUser.Naslov.HisnaStevilka == null || Model.ApplicationUser.Naslov.Posta.PostnaStevilka == null || Model.ApplicationUser.Naslov.Posta.Kraj == null)
+                        {
+                            <span>Ni podatka</span>
+
+                        }
+                        else
+                        {
+                            <span>@Html.DisplayFor(model => model.ApplicationUser.Naslov.Ulica)</span> <span>@Html.DisplayFor(model => model.ApplicationUser.Naslov.HisnaStevilka),</span>
+                            <span> @Model.ApplicationUser.Naslov.Posta.PostnaStevilka</span>
+                            <span>, @Model.ApplicationUser.Naslov.Posta.Kraj</span>
+                        }
+                    </td>
+                    <td>@Model.Dodan.ToString("dd.MM.yyyy, HH:mm")</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    @{var animacija = "";}
+    <div class="row">
+        @foreach (var item in Model.Narocila)
+        {
+            if (Model.Narocila.First() == item)
+            {
+                animacija = "";
+            }
+            else
+            {
+                animacija = "wow animated fadeIn";
+            }
+
+            <div class="col-md-8 @animacija">
+                <div class="table-responsive text-nowrap my-5 z-depth-1 rounded">
+
+
+                    <table class="table table-striped table-hover m-0">
+                        <thead class="black text-white">
+
+                            <tr>
+                                <th scope="col">Atribut</th>
+                                <th scope="col">Opis</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">@Html.DisplayName("Ime izdelka")</th>
+                                <td>@item.Izdelek.Ime</td>
+
+                            </tr>
+                            <tr>
+                                <th scope="row">@Html.DisplayName("Opcija")</th>
+                                <td>@item.Opcija.Ime</td>
+
+                            </tr>
+                            <tr>
+                                <th scope="row">@Html.DisplayName("Material")</th>
+                                <td>@item.Izdelek.Material.Ime</td>
+
+                            </tr>
+                            <tr>
+                                <th scope="row">@Html.DisplayName("Cena") za kos</th>
+                                <td>@string.Format(new System.Globalization.CultureInfo("sl-SI"), "{0:C}", item.Izdelek.Cena)</td>
+
+                            </tr>
+                            <tr>
+                                <th scope="row">@Html.DisplayName("Količina")</th>
+                                <td>@item.Kolicina</td>
+
+                            </tr>
+                            <tr>
+                                <th scope="row">@Html.DisplayName("Znesek")</th>
+                                <td>@string.Format(new System.Globalization.CultureInfo("sl-SI"), "{0:C}", item.Znesek)</td>
+
+                            </tr>
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-4 d-flex justify-content-center align-items-center @animacija">
+                <img id="imageToSwap" src="~/slike/@item.Opcija.Slika" class="img-fluid rounded z-depth-2" width="300" asp-append-version="true" />
+            </div>
+            @if (item.Opombe != null)
+            {
+                <div class="col-12 mt-5 mt-md-3 @animacija">
+                    <div class="card bg-warning mb-3">
+                        <div class="card-header text-white black">@Html.DisplayName("Opombe") za izdelek &nbsp; '@item.Izdelek.Ime'</div>
+                        <div class="card-body">
+
+                            <p class="text-black">@item.Opombe</p>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        }
+    </div>
+
+    <div class="table-responsive text-nowrap my-5 z-depth-1 rounded wow animated fadeIn">
+
+
+        <table class="table table-striped table-hover m-0">
+            <thead class="bg-primary text-white">
+
+                <tr>
+                    <th scope="col" class="text-center"><h5 class="mb-0">@Html.DisplayNameFor(model => model.SkupniZnesek)</h5></th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="display-4 text-center">
+                        @string.Format(new System.Globalization.CultureInfo("sl-SI"), "{0:C}", @Model.SkupniZnesek)
+                    </td>
+
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+
+    @if (User.Identity.IsAuthenticated && User.IsInRole("ADMINISTRATOR"))
+    {
+        <div>
+            <a asp-action="Index" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="@ViewBag.Filtriranje" asp-route-izborTransakcij="@ViewBag.IzborTransakcij" asp-route-prejsnjaVrednostIzbora="@ViewBag.PrejsnjaVrednostIzbora" asp-route-izbira1="@ViewBag.Zakljuceno" asp-route-izbira2="@ViewBag.Odposlano" asp-route-izbira3="@ViewBag.VTeku" class="customColor">Nazaj</a>
+        </div>
+    }
+
+</div>

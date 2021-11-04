@@ -1,0 +1,253 @@
+﻿@model PaginatedList<Voleska.ViewModel.SporociloViewModel>
+
+@{
+    ViewData["Title"] = "Sporočila";
+}
+<nav aria-label="breadcrumb" class="">
+    <ol class="breadcrumb bg-white d-flex justify-content-center">
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-izbira="domov" class="customColor">Domov</a></li>
+        <li class="breadcrumb-item active">Sporočila</li>
+    </ol>
+</nav>
+
+<h1 class="text-center">Sporočila</h1>
+
+
+<p>
+    <a asp-action="NovOglas" class="customColor" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-izbranTipIzdelka="@ViewBag.TipIzdelka" asp-route-SearchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="@ViewBag.Filtriranje"><i class="far fa-plus-square fa-lf mr-2"></i>Ustvari nov oglas</a>
+</p>
+
+
+<div class="row mb-4">
+
+    <form class="d-flex align-items-center flex-column flex-xl-row col-xl-8" asp-controller="Sporocila" asp-action="Index" method="get">
+
+        <div class="d-flex flex-column flex-xl-row mr-1 col-12 p-0">
+            <div class="input-group md-form form-sm form-2 col-xl-2 col-12 mb-0 pl-md-0">
+                <input type="text" class="p-2 col-12" id="SearchString" name="searchString" value="@ViewBag.SearchString">
+                <label for="SearchString" class="ml-3">E-naslov...</label>
+            </div>
+            <div class="input-group md-form form-sm form-2 col-xl-2 col-12 mb-0">
+                <input type="text" class="p-2 col-12" id="SearchString2" name="searchString2" value="@ViewBag.SearchString2">
+                <label for="SearchString2" class="ml-3">Ime...</label>
+            </div>
+            <div class="input-group md-form form-sm form-2 col-xl-2 col-12 mb-0">
+                <input type="text" class="p-2 col-12" id="SearchString3" name="searchString3" value="@ViewBag.SearchString3">
+                <label for="SearchString3" class="ml-3">Priimek...</label>
+            </div>
+
+            <input type="hidden" name="filtriranje" value="@ViewBag.Filtriranje" />
+            <div class="input-group-append mt-2 ml-xl-4 d-flex align-items-center col-xl-3 col-12 pl-1">
+                <button type="submit" class=" btn btn-outline-unique2 btn px-2 mx-0 d-flex align-items-center" style="display: inline-block; height: 45px;">
+                    <span class="mr-1">Iskanje </span>  <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+                </button>
+                @if (@ViewBag.SearchString != null || @ViewBag.SearchString2 != null || @ViewBag.SearchString3 != null)
+                {
+                    <div><a asp-action="Index" asp-controller="Sporocila" class="ml-2">Nazaj</a></div>
+                }
+            </div>
+
+        </div>
+
+
+    </form>
+
+
+
+    <div class="col-xl-4 d-flex align-items-center justify-content-end">
+        <!-- Split button -->
+        <div class="btn-group orderBy2 mb-3 mb-md-0">
+            <a type="button" class="btn btn-outline-unique2 ml-0" asp-action="Index" asp-controller="Sporocila" asp-route-filtriranje="datumPadajoce">
+
+                @if (ViewBag.IzbranFilter == null)
+                {
+                    <span>Razvrščanje</span>
+                }
+                else
+                {
+                    <span>@ViewBag.IzbranFilter</span>
+                }
+
+            </a>
+
+            <button type="button" class="btn btn-outline-unique2 dropdown-toggle px-3 mr-0 " id="dropBtn" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+
+            <div class="dropdown-menu  poravnaj z-depth-5 p-2" id="slideMe">
+                <a class="dropdown-item dropDownCustom hoverable waves-effect waves-light py-2" asp-action="Index" asp-controller="Sporocila" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="datumPadajoce">Privzeto</a>
+                <a class="dropdown-item dropDownCustom hoverable waves-effect waves-light py-2" asp-action="Index" asp-controller="Sporocila" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="datumPadajoce">Najnovejše</a>
+                <a class="dropdown-item dropDownCustom hoverable waves-effect waves-light py-2" asp-action="Index" asp-controller="Sporocila" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="datumNarascajoce">Najstarejše</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+@{ var novo = "";
+    var admin = true;
+}
+
+@if (ViewBag.PrazenSeznam == true)
+{
+    <div class="zapolniStran">
+        <h2 class="text-center mt-5 mb-3">Nimate sporočil!</h2>
+        <div class="text-center"><i class="far fa-envelope fa-10x  amber-text"></i></div>
+    </div>
+
+}
+else
+{
+    <div class="table-responsive text-nowrap mb-4 z-depth-1 rounded">
+
+        <table class="table table-striped table-hover m-0">
+            <thead class="black text-white">
+                <tr>
+                    <td>
+                        @Html.DisplayName("Korespondent")
+                    </td>
+
+                    <td class="text-center">
+                        @Html.DisplayName("Status")
+                    </td>
+
+                    <td>
+                        @Html.DisplayName("Nazadnje odgovoril")
+                    </td>
+
+                    <td>
+                        @Html.DisplayName("Tema")
+                    </td>
+                    <td>
+                        @Html.DisplayName("Datum")
+                    </td>
+                    <td></td>
+
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+
+                    if (item.Sporocilo.Odprto == false)
+                    {
+                        novo = "font-weight-bold";
+                    }
+                    else
+                    {
+                        novo = "";
+                    }
+                    <tr>
+                        <td class="@novo align-middle">
+                            @Html.DisplayFor(modelItem => item.Ime)
+                        </td>
+                        <td class="align-middle text-center">
+                            @if (item.Sporocilo.Odgovorjeno == true)
+                            {
+                                <span class="text-success"><i class="fas fa-check text-success fa-lg mx-2"></i>Odpisano</span>
+                            }
+                        </td>
+                        <td class="align-middle @novo">
+                            @Html.DisplayFor(modelItem => item.Sporocilo.Ime)
+                            @Html.DisplayFor(modelItem => item.Sporocilo.Priimek)
+                        </td>
+
+
+                        <td class="align-middle @novo">
+                            @Html.DisplayFor(modelItem => item.Sporocilo.Tema)
+                        </td>
+
+                        <td class="align-middle">
+                            @item.Dodan.ToString("dd.MM.yyyy HH:mm")
+                        </td>
+
+
+
+                        <td class="align-middle text-right">
+
+                            <a class="izbira btn-sm btn-outline-primary mr-2 " asp-action="Details" asp-route-id="@item.PogovorID" asp-route-admin="@admin" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="@ViewBag.Filtriranje" data-placement="left" data-toggle="tooltip" title="Preberi"><i class="fas fa-envelope-open-text"></i></a>
+                            <a class="izbira btn-sm btn-outline-danger mr-2 " asp-action="Delete" asp-route-id="@item.PogovorID" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="@ViewBag.Filtriranje" data-placement="right" data-toggle="tooltip" title="Izbriši"><i class="fa fa-trash"></i></a>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+
+    </div>
+
+}
+
+
+@if (ViewBag.PrazenSeznam != true)
+{
+
+
+
+
+    var prejsnjaStran = 1;
+
+
+    if (ViewBag.StevilkaStrani != null)
+    {
+        prejsnjaStran = ViewBag.StevilkaStrani - 1;
+    }
+    var naslednjaStran = ViewBag.StevilkaStrani + 1;
+
+    if (ViewBag.StevilkaStrani == null)
+    {
+        naslednjaStran = 2;
+    }
+
+    var izklopi = "";
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination pg-teal">
+            @if (!@Model.HasPreviousPage)
+            {
+                izklopi = "text-muted izklopi";
+            }
+            <li class="page-item">
+
+                <a class="page-link @izklopi pl-0" asp-route-stevilkaStrani="@prejsnjaStran" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="@ViewBag.Filtriranje">Nazaj</a>
+            </li>
+            @for (var i = 1; i <= Model.TotalPages; i++)
+            {
+                if (i == @Model.PageIndex)
+                {
+                    <li class="page-item active">
+                        <a class="page-link" asp-route-kliknjenLinkStrani="@i" asp-route-stevilkaStrani="@i" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="@ViewBag.Filtriranje">@i <span class="sr-only">(current)</span></a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item"><a class="page-link" asp-route-kliknjenLinkStrani="@i" asp-route-stevilkaStrani="@i" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="@ViewBag.Filtriranje">@i</a></li>
+                }
+
+
+
+            }
+
+            @if (@Model.HasNextPage)
+            {
+                izklopi = "";
+            }
+            else
+            {
+                izklopi = "text-muted izklopi";
+            }
+            <li class="page-item ">
+                <a class="page-link @izklopi" asp-route-stevilkaStrani="@naslednjaStran" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="@ViewBag.Filtriranje">Naprej</a>
+            </li>
+
+        </ul>
+    </nav>
+
+
+}

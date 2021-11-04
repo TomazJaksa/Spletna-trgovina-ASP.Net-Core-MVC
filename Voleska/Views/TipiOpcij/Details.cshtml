@@ -1,0 +1,21 @@
+﻿@model Voleska.Models.TipOpcije
+
+@{
+    ViewData["Title"] = "Podrobnosti";
+}
+
+<nav aria-label="breadcrumb" class="">
+    <ol class="breadcrumb bg-white d-flex justify-content-center">
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-izbira="domov" class="customColor">Domov</a></li>
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Katalog" asp-action="Index" class="customColor">Katalog</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="TipiOpcij" class="customColor">Tipi opcij</a></li>
+        <li class="breadcrumb-item active">Podrobnosti</li>
+    </ol>
+</nav>
+
+<h1 class="text-center">@Html.DisplayFor(model => model.Ime)</h1>
+<hr />
+<div class="d-flex justify-content-center zapolniStran">
+    <a asp-action="Edit" asp-route-id="@Model.ID" class="mr-1 customColor">Uredi</a> |
+    <a asp-action="Index" class="ml-1 customColor">Nazaj na seznam</a>
+</div>

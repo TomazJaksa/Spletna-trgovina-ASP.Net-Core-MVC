@@ -1,0 +1,168 @@
+﻿@model IEnumerable<Voleska.Models.Narocilo>
+
+@{
+    ViewData["Title"] = "Blagajna";
+}
+
+
+
+
+@using Microsoft.Extensions.Options
+@inject IOptions<StripeSettings> Stripe
+
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-white d-flex justify-content-center">
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-izbira="domov" class="customColor">Domov</a></li>
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Katalog" asp-action="PoglejKosarico" asp-route-transakcijaId="@ViewBag.TransakcijaId" class="customColor">Košarica</a></li>
+        <li class="breadcrumb-item active">Blagajna</li>
+    </ol>
+</nav>
+
+<h1 class="text-center mb-5">Blagajna</h1>
+
+@{
+
+    var prestej = Model.Count();
+    var idTransakcije = 0;
+ 
+
+        <div class="table-responsive text-nowrap mb-4 z-depth-1 rounded">
+
+            <table class="table m-0" id="narocila">
+                <thead class="black text-white">
+                    <tr>
+                        <th>
+
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Izdelek.Ime)
+                        </th>
+                        <th>
+                            @Html.DisplayName("Opcija")
+                        </th>
+
+                        
+                        <th>
+                            @Html.DisplayNameFor(model => model.Material.Ime)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Izdelek.Cena)
+                        </th>
+                        
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.Znesek)
+                        </th>
+                        
+                    </tr>
+                </thead>
+
+
+                <tbody>
+
+
+                    @foreach (var item in Model)
+                    {
+                        <tr id="narocilo-@item.ID">
+                            @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.NarociloVC), new { narociloId = item.ID , blagajna=true})
+                        </tr>
+                    }
+                    @foreach (var item in Model)
+                    {
+
+                        idTransakcije = item.Transakcija.ID;
+
+                <tr class="bg-light">
+
+                    <td></td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td class="align-middle">
+                        <span>Skupni znesek: </span>
+                    </td>
+                    <td class="align-middle">
+                        <span id="skupniZnesek">
+                            @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.SkupniZnesekVC), new { skupniZnesek = item.Transakcija.SkupniZnesek })
+                        </span>
+                    </td>
+
+                </tr>
+
+
+                        break;
+                    }
+
+
+
+                </tbody>
+            </table>
+        </div>
+        var skrij = "";
+
+        <div id="seznamOpomb" class="wow animated fadeIn">
+            @foreach (var item in Model)
+            {
+                if (item.Opombe != null)
+                {
+                    skrij = "";
+                }
+                else
+                {
+                    skrij = "no-display";
+                }
+
+                <div id="opomba-@item.ID" class="@skrij">
+                    @if (item.Opombe != null)
+                    {
+                        @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.OpombaVC), new { opomba = item.Opombe, narociloId = item.ID, imeIzdelka = item.Izdelek.Ime, blagajna=true })
+
+                    }
+                </div>
+            }
+        </div>
+
+
+    }
+
+
+@{
+
+    @foreach (var item in Model)
+    {
+        if (Model.First() == item)
+        {
+            var skupniZnesekCenti = item.Transakcija.SkupniZnesek * 100;
+            var user = ViewBag.UserMail;
+
+            
+
+            <form asp-action="Charge" asp-controller="Katalog" method="POST" asp-route-skupniZnesekCenti="@skupniZnesekCenti" asp-route-transakcijaId="@item.Transakcija.ID">
+                
+                <script src="//checkout.stripe.com/v2/checkout.js"
+                        class="stripe-button"
+                        data-key="@Stripe.Value.PublishableKey"
+                        data-locale="sl"
+                        data-currency="eur"
+                        data-image="../slike/Voleska.jpg"
+                        data-name="Voleska"
+                        data-amount="@skupniZnesekCenti"
+                        @*data-allow-remember-me="false"*@
+                        data-email="@user">
+                </script>
+                <script>
+                    // Hide default stripe button, be careful there if you
+                    // have more than 1 button of that class
+                    document.getElementsByClassName("stripe-button-el")[0].style.display = 'none';
+                </script>
+
+                <button type="submit" class="ml-0 btn btn-outline-info">Nakup</button>
+            </form>
+           
+        }
+    }
+}

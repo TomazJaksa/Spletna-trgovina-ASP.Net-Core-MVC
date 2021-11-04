@@ -1,0 +1,172 @@
+﻿@page
+@model LoginModel
+
+@using Microsoft.Extensions.Options
+@inject IOptions<Voleska.ReCAPTCHASettings> GooglereCAPTCHA
+
+@{
+    ViewData["Title"] = "Prijava";
+    Layout = "~/Areas/Identity/Pages/Account/_AuthLayout.cshtml";
+}
+
+@{ 
+
+    var status = "";
+}
+
+@if (ViewBag.ReCaptchaResponse != null)
+{
+    if (ViewBag.ReCaptchaResponse == true)
+    {
+        status = "bg-info";
+    }
+    else {
+        status = "bg-danger";
+    }
+    <div id="toast" class="toast text-white @status animated fadeInLeft" data-autohide="false">
+        <div class="card-header text-white @status">
+            <strong class="mr-auto text-white font-weight-bold">ReCAPTCHA</strong>
+            <button id="close" type="button" class="close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="toast-body text-white">
+            @ViewBag.ReCaptchaInfo
+        </div>
+    </div>
+
+
+}
+
+
+<div class="row">
+
+    <div class=" col-12 p-0 m-0">
+
+        <section>
+
+            <form id="account" method="post" class="text-center needs-validation" novalidate>
+                <h1>@ViewData["Title"]</h1>
+
+                @if (@TempData["Invalid"] != null)
+                {
+
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        @TempData["Invalid"]
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+
+                }
+                <div class="form-group md-form md-outline input-with-pre-icon pt-0 pb-0 mb-0">
+                    <i class="fas fa-user input-prefix"></i>
+                    <label asp-for="Input.Username">Uporabniško ime</label>
+                    <input asp-for="Input.Username" class="form-control" required />
+                    <div class="valid-tooltip">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip">
+                        <span id="errorMessage">Uporabniško ime je obvezno!</span>
+                    </div>
+                </div>
+
+                <div class="form-group md-form md-outline input-with-pre-icon pt-0 mt-4 pb-0 mb-0">
+                    <i class="fas fa-lock input-prefix"></i>
+                    <label asp-for="Input.Password">Geslo</label>
+                    <input asp-for="Input.Password" class="form-control" required />
+                    <div class="valid-tooltip">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip">
+                        <span id="errorMessage">Geslo je obvezno!</span>
+                    </div>
+
+                </div>
+
+                <div class="form-group mt-3 ">
+                    <div class="checkbox">
+                        <label asp-for="Input.RememberMe">
+                            <input asp-for="Input.RememberMe" />
+                            Zapomni si me
+                        </label>
+                    </div>
+                </div>
+
+                <input asp-for="Input.Token" type="hidden" />
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default">Vpis</button>
+                </div>
+                <div class="form-group">
+                    <p>
+                        <a id="forgot-password" asp-page="./ForgotPassword">Pozabil sem geslo</a>
+                    </p>
+
+                </div>
+            </form>
+        </section>
+    </div>
+
+
+
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://www.google.com/recaptcha/api.js?render=@GooglereCAPTCHA.Value.ReCAPTCHA_Site_Key"></script>
+    <script>
+
+            grecaptcha.ready(function () {
+                grecaptcha.execute('@GooglereCAPTCHA.Value.ReCAPTCHA_Site_Key', { action: 'homepage' }).then(function (token) {
+                    // Add your logic to submit to your backend server here.
+                    
+                    $("#Input_Token").val(token);
+                });
+            });
+
+    </script>
+    <script>
+
+        $('.alert').alert();
+
+        $('input[type="text"]').on('change keyup paste', function (event) {
+            if (!this.value) {
+                $('input[type="text"]').removeClass("valid");
+                $('input[type="text"]').addClass("input-validation-error");
+            }
+        });
+
+        $('#close').on('click', function (event) {
+            event.preventDefault();
+                $('#toast').removeClass("animated fadeInLeft");
+                $('#toast').addClass("animated fadeOutLeft");
+            
+        });
+
+        setTimeout(function () {
+            $('#toast').addClass("animated fadeOutLeft");
+        }, 2000);
+
+
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+}

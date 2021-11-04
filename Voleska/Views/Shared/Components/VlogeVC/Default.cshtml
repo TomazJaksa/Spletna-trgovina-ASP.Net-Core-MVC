@@ -1,0 +1,18 @@
+﻿@model IEnumerable<Voleska.Areas.Identity.Data.ApplicationRole>
+@{
+    
+
+    @foreach (var role in Model)
+    {
+        if (ViewBag.SelectedRole == role.Id)
+        {
+            <option selected value="@role.Id" data-userId="@ViewBag.UserId">@role.Name.ToLower()</option>
+        }
+        else {
+            <option value="@role.Id" data-userId="@ViewBag.UserId">@role.Name.ToLower()</option>
+        }
+        
+    }
+
+}
+

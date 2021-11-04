@@ -1,0 +1,262 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Voleska.Models.Blog">
+    <Position X="11" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQBAAAAIQgAAAAQAAACAAAACAAAAAAAAQQACAABA=</HashCode>
+      <FileName>Models\Blog.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Komentarji" />
+      <Property Name="LajkaniBlogi" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Voleska.Models.Dopisovanje">
+    <Position X="10.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAgAAAAAAACAAAAAAAAAJAAAAQAAAAAAA=</HashCode>
+      <FileName>Models\Dopisovanje.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Pogovor" />
+      <Property Name="Sporocilo" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Voleska.Models.Izdelek">
+    <Position X="3.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAQAAAghAAABAIAAgQAAACAEAAAgQAQAAAIAAQ=</HashCode>
+      <FileName>Models\Izdelek.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Material" />
+      <Property Name="TipIzdelka" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Opcije" />
+      <Property Name="Narocila" />
+      <Property Name="OceneIzdelkov" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Voleska.Models.Komentar">
+    <Position X="4.5" Y="14.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAKDiAAQAQAAAAAEAACBAAAAAAgQAAAAAAA=</HashCode>
+      <FileName>Models\Komentar.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="ApplicationUser" />
+      <Property Name="Blog" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="KomentarjiZOdgovoromi" />
+      <Property Name="OdgovoriNaTaKomentar" />
+      <Property Name="LajkaniKomentarji" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Voleska.Models.LajkanjeBlogov">
+    <Position X="9.75" Y="13.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAADgAAQAAAAAAAAAACAAEAAAAAQAAAAAAA=</HashCode>
+      <FileName>Models\LajkanjeBlogov.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="ApplicationUser" />
+      <Property Name="Blog" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Voleska.Models.LajkanjeKomentarjev">
+    <Position X="7.75" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAACgAAQAAAAAQAAAACAAEAAAAAQAAAAAAA=</HashCode>
+      <FileName>Models\LajkanjeKomentarjev.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="ApplicationUser" />
+      <Property Name="Komentar" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Voleska.Models.Material">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAgAAABAAAAAIAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Models\Material.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Izdelki" />
+      <Property Name="Narocila" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Voleska.Models.Narocilo">
+    <Position X="4.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAEAAAAAAAhAIAAAAEgAQAABDAAAAAAAAQAAABAAA=</HashCode>
+      <FileName>Models\Narocilo.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Izdelek" />
+      <Property Name="Transakcija" />
+      <Property Name="Opcija" />
+      <Property Name="Material" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Voleska.Models.Naslov">
+    <Position X="0.5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgCoAAAAAAAABAAAACAAAAAAAAwAAABAAA=</HashCode>
+      <FileName>Models\Naslov.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Posta" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="ApplicationUsers" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Voleska.Models.Novice">
+    <Position X="10.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAgAAAAAAAAAAAACCAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Models\Novice.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Voleska.Models.OcenaIzdelka">
+    <Position X="0.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACgAAQAAAAgQAAABKAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Models\OcenaIzdelka.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="ApplicationUser" />
+      <Property Name="Izdelek" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Voleska.Models.Odgovor">
+    <Position X="9.25" Y="16.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAgAAAAAAABAAAAAAAAAABAAAQAAAIAAA=</HashCode>
+      <FileName>Models\Odgovor.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="TaKomentar" />
+      <Property Name="OdgovorNaTaKomentar" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Voleska.Models.Opcija">
+    <Position X="6" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAQAAAAgAAAAAAAgCAAABCAAAAAAAAQAAAAAAU=</HashCode>
+      <FileName>Models\Opcija.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Izdelek" />
+      <Property Name="TipOpcije" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Narocila" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Voleska.Models.Pogovor">
+    <Position X="10.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAIAAAAAAAAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>Models\Pogovor.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Dopisovanja" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Voleska.Models.Posta">
+    <Position X="0.5" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAIAAAAAAAgAKAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Models\Posta.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Naslovi" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Voleska.Models.Sporocilo">
+    <Position X="8" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIQACAAgAAAAAAAAAAAAAAAAAAAAAgBAICACAA=</HashCode>
+      <FileName>Models\Sporocilo.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Dopisovanja" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Voleska.Models.TipIzdelka">
+    <Position X="0.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAgAAAAAAAACIAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\TipIzdelka.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Izdelki" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Voleska.Models.TipOpcije">
+    <Position X="8.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\TipOpcije.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Opcije" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Voleska.Models.Transakcija">
+    <Position X="8.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAACgAAQAAAAAAAAAACAAAEAAAAQBAAAAAQ=</HashCode>
+      <FileName>Models\Transakcija.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="ApplicationUser" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Narocila" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Voleska.Areas.Identity.Data.ApplicationUser">
+    <Position X="5.75" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAQAACQAAAAAAAAAQAAAAiAAAgAAQAQAICAAAI=</HashCode>
+      <FileName>Areas\Identity\Data\ApplicationUser.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Naslov" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Transakcije" />
+      <Property Name="Komentarji" />
+      <Property Name="OceneIzdelkov" />
+      <Property Name="UserRoles" />
+      <Property Name="LajkaniBlogi" />
+      <Property Name="LajkaniKomentarji" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Voleska.Areas.Identity.Data.ApplicationRole" Collapsed="true">
+    <Position X="2.75" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Areas\Identity\Data\ApplicationRole.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="UserRoles" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Voleska.Areas.Identity.Data.ApplicationUserRole">
+    <Position X="2.75" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAYAAAAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>Areas\Identity\Data\ApplicationUserRole.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="ApplicationUser" />
+      <Property Name="ApplicationRole" />
+    </ShowAsAssociation>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

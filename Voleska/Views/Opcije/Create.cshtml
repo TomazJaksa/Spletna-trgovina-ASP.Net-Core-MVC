@@ -1,0 +1,144 @@
+﻿@model Voleska.ViewModel.OpcijaViewModel;
+
+@{
+    ViewData["Title"] = "Ustvari";
+}
+
+<nav aria-label="breadcrumb" class="">
+    <ol class="breadcrumb bg-white d-flex justify-content-center">
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-izbira="domov" class="customColor">Domov</a></li>
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Izdelki" asp-action="Index" class="customColor">Izdelki</a></li>
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Izdelki" asp-action="Details" asp-route-id="@ViewBag.IzdelekId" class="customColor">Podrobnosti</a></li>
+        <li class="breadcrumb-item active">Ustvari</li>
+    </ol>
+</nav>
+
+
+
+<h1 class="text-center mb-4">Ustvari opcijo</h1>
+<hr />
+<div class="row d-flex justify-content-center">
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data" class="needs-validation" novalidate>
+
+            <input type="hidden" name="izdelekId" value="@ViewBag.IzdelekId" />
+            <div class="form-group md-form md-outline">
+                <label asp-for="Ime" class="control-label"></label>
+                <input asp-for="Ime" class="form-control z-depth-1" required />
+                <div class="valid-tooltip">
+                    Izgleda okej!
+                </div>
+                <div class="invalid-tooltip">
+                    Ime je obvezno!
+                </div>
+            </div>
+
+            <div class="no-display" id="prikazSlike">
+                <img id="output" src="~/katalogSlike/" asp-append-version="true" class="z-depth-1 img-thumbnail d-flex justify-content-center" width="290" />
+            </div>
+            <div class="input-group z-depth-1 mt-4">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="slika">Naloži</span>
+                </div>
+                <div class="custom-file ">
+                    <input type="file" class="custom-file-input" id="slika"
+                           aria-describedby="slika" asp-for="Slika" required>
+                    <label class="custom-file-label" asp-for="Slika">Izberite datoteko...</label>
+                </div>
+                <div class="valid-tooltip">
+                    Izgleda okej!
+                </div>
+                <div class="invalid-tooltip">
+                    Slika je obvezna!
+                </div>
+            </div>
+
+            <div class="form-row mt-3">
+
+
+                <div class="form-group col-9">
+                    <label asp-for="TipOpcijeID" class="control-label">Tip opcije</label>
+                    <select asp-for="TipOpcijeID" class="form-control z-depth-1" asp-items="ViewBag.TipOpcijeID"></select>
+                    <div class="valid-tooltip">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip">
+                        Tip opcije je obvezen!
+                    </div>
+                </div>
+
+                <div class="form-group form-check mt-4 col-3 d-flex justify-content-center align-items-center">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="Zaloga" /> @Html.DisplayNameFor(model => model.Zaloga)
+                    </label>
+                </div>
+
+            </div>
+                <div class="form-group">
+                    <input type="submit" value="Ustvari" class="btn btn-primary" /><a asp-action="Details" asp-controller="Izdelki" asp-route-id="@ViewBag.IzdelekId" class="ml-2 customColor">Nazaj</a>
+                </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+
+
+        $(document).ready(function () {
+
+
+
+
+            $('input[type="file"]').change(function () {
+                $('#prikazSlike').removeClass("animated fadeIn");
+                $('#prikazSlike').addClass("d-flex justify-content-center mb-5 mt-4");
+                readURL(this);
+            });
+
+        });
+
+
+
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#output').attr('src', e.target.result);
+                    $('#prikazSlike').removeClass("animated fadeOut");
+                    $('#prikazSlike').addClass("animated fadeIn");
+                    $('#prikazSlike').removeClass("no-display");
+                }
+
+                reader.readAsDataURL(input.files[0]); // convert to base64 string
+            }
+        }
+
+
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+    </script>
+}

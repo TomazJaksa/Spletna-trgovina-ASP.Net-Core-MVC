@@ -1,0 +1,62 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Voleska.Areas.Identity.Data
+
+@inject SignInManager<Voleska.Areas.Identity.Data.ApplicationUser> SignInManager
+@inject UserManager<Voleska.Areas.Identity.Data.ApplicationUser> UserManager
+
+@{
+    var moveMe = "moveMe";
+    var hideShowUserIcon = "";
+    @if (SignInManager.IsSignedIn(User))
+    {
+        moveMe = "";
+        hideShowUserIcon = "userLogo";
+    }
+    else {
+        hideShowUserIcon = "";
+    }
+
+        <ul class="navbar-nav">
+            <li id="UporabnikIkona" class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-333" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    <i id="" class="fas fa-user-circle mr-1 @hideShowUserIcon"></i>@UserManager.GetUserName(User)
+                </a>
+                <div class="dropdown-menu dropdown-default p-2 @moveMe z-depth-5"
+                     aria-labelledby="navbarDropdownMenuLink-333">
+
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+
+                        <a id="manage" class="dropdown-item dropDownCustom hoverable" asp-area="Identity" asp-page="/Account/Manage/Index" data-toggle="tooltip" data-placement="left" title='Urejanje profila'>@UserManager.GetUserName(User)</a>
+
+                        <form id="logoutForm" class="no-display" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                        </form>
+                        <a href="javascript:{}" onclick="document.getElementById('logoutForm').submit();" id="logout" class="dropdown-item dropDownCustom hoverable">Izpis</a>
+
+                    }
+                    else
+                    {
+                        <a class="dropdown-item dropDownCustom hoverable" id="register" asp-area="Identity" asp-page="/Account/Register">Registracija</a>
+                        <a class="dropdown-item dropDownCustom hoverable" id="login" asp-area="Identity" asp-page="/Account/Login">Prijava</a>
+
+                    }
+                </div>
+            </li>
+        </ul>
+    }
+
+<script>
+    $(document).ready(function () {
+        try {
+            $('#logout').click(function () {
+                // alert('Sign new href executed.');
+                console.log("Session token start");
+                sessionStorage.removeItem('accessToken');
+                console.log("Session token done");
+            });
+        } catch (e) {
+            console.log("Session token err");
+        }
+    });
+</script>

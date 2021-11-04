@@ -1,0 +1,177 @@
+﻿@model Voleska.Areas.Identity.Data.ApplicationUser
+
+@{
+    ViewData["Title"] = "Uredi";
+}
+<nav aria-label="breadcrumb" class="">
+    <ol class="breadcrumb bg-white d-flex justify-content-center">
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-izbira="domov" class="customColor">Domov</a></li>
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Uporabniki" asp-action="Index" class="customColor" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-searchString4="@ViewBag.SearchString4" asp-route-filtriranje="@ViewBag.Filtriranje">Uporabniki</a></li>
+        <li class="breadcrumb-item active">Uredi</li>
+    </ol>
+</nav>
+
+<h1 class="text-center mb-3">Uredi</h1>
+
+<hr />
+<div class="row d-flex justify-content-center">
+    <div class="col-md-7">
+        <form asp-action="Edit" class=" needs-validation" novalidate>
+            <div class="form-row mb-4">
+                
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group col md-form md-outline">
+                    <label asp-for="UserName" class="control-label"></label>
+                    <input asp-for="UserName" name="username" class="form-control z-depth-1" disabled />
+                    <div class="valid-tooltip">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip">
+                        Uporabniško ime je obvezen!
+                    </div>
+                </div>
+
+                <input type="hidden" asp-for="NaslovID" name="naslovId" value="@Model.NaslovID" />
+
+                <div class="form-group col md-form md-outline">
+                    <label asp-for="Naslov.Ulica" class="control-label"></label>
+                    <input asp-for="Naslov.Ulica" class="form-control z-depth-1" name="ulica" />
+                    <div class="valid-tooltip">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip">
+                        Ulica je obvezna!
+                    </div>
+                </div>
+                @*
+                    <div class="form-group">
+                        <label asp-for="PasswordHash" class="control-label"></label>
+                        <input asp-for="PasswordHash" class="form-control" />
+                        <span asp-validation-for="PasswordHash" class="text-danger"></span>
+                    </div>
+
+                *@
+            </div>
+            <div class="form-row mb-4">
+                <div class="form-group col md-form md-outline">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" name="email" class="form-control z-depth-1" disabled />
+                    <div class="valid-tooltip">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip">
+                        Email je obvezen!
+                    </div>
+                </div>
+                <div class="form-group col md-form md-outline">
+                    <label asp-for="Naslov.HisnaStevilka" class="control-label"></label>
+                    <input asp-for="Naslov.HisnaStevilka" class="form-control z-depth-1" name="hisnaStevilka" />
+                    <div class="valid-tooltip">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip">
+                        Hišna številka je obvezna!
+                    </div>
+                </div>
+            </div>
+            <div class="form-row mb-4">
+                <div class="form-group col md-form md-outline">
+                    <label asp-for="Ime" class="control-label"></label>
+                    <input asp-for="Ime" name="ime" class="form-control z-depth-1" />
+
+                    <div class="valid-tooltip">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip">
+                        Ime je obvezno!
+                    </div>
+                </div>
+
+                <div class="form-group md-form md-outline">
+                    <label asp-for="Naslov.Posta.PostnaStevilka" class="control-label"></label>
+                    <input asp-for="Naslov.Posta.PostnaStevilka" class="form-control z-depth-1" name="postnaStevilka" />
+                    <div class="valid-tooltip">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip">
+                        Poštna številka je obvezna!
+                    </div>
+                </div>
+            </div>
+            <div class="form-row mb-4">
+                <div class="form-group col md-form md-outline">
+                    <label asp-for="Priimek" class="control-label"></label>
+                    <input asp-for="Priimek" name="priimek" class="form-control z-depth-1" />
+                    <div class="valid-tooltip">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip">
+                        Priimek je obvezen!
+                    </div>
+                </div>
+
+                <div class="form-group md-form md-outline">
+                    <label asp-for="Naslov.Posta.Kraj" class="control-label"></label>
+                    <input asp-for="Naslov.Posta.Kraj" class="form-control z-depth-1" name="kraj" />
+                    <div class="valid-tooltip">
+                        Izgleda okej!
+                    </div>
+                    <div class="invalid-tooltip">
+                        Kraj je obvezen!
+                    </div>
+                </div>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" name="aktiven" asp-for="Aktiven" /> @Html.DisplayNameFor(model => model.Aktiven)
+                </label>
+            </div>
+            @*
+                <div class="form-group">
+                    <label asp-for="Dodan" class="control-label"></label>
+                    <input asp-for="Dodan" class="form-control" />
+                    <span asp-validation-for="Dodan" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Posodobljen" class="control-label"></label>
+                    <input asp-for="Posodobljen" class="form-control" />
+                    <span asp-validation-for="Posodobljen" class="text-danger"></span>
+                </div>
+            *@
+
+
+
+
+            <div class="form-group">
+                <input type="submit" value="Posodobi" class="ml-0 btn btn-primary" /><a asp-action="Index" class="ml-2 customColor" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-searchString4="@ViewBag.SearchString4" asp-route-filtriranje="@ViewBag.Filtriranje">Nazaj</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+    </script>
+}

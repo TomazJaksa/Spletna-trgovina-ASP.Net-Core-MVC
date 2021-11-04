@@ -1,0 +1,296 @@
+﻿@model Voleska.ViewModel.IzdelkiViewModel
+
+@{
+    ViewData["Title"] = "Urejanje izdelkov";
+}
+
+<nav aria-label="breadcrumb" class="">
+    <ol class="breadcrumb bg-white d-flex justify-content-center">
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-izbira="domov" class="customColor">Domov</a></li>
+        <li class="breadcrumb-item active">Izdelki</li>
+    </ol>
+</nav>
+
+<h1 class="text-center mb-3">Izdelki</h1>
+
+<p>
+    <a asp-action="Create" class="customColor" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-izbranTipIzdelka="@ViewBag.TipIzdelka" asp-route-SearchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje"><i class="far fa-plus-square fa-lf mr-2"></i>Ustvari nov izdelek</a>
+</p>
+
+<div class="row">
+    <div class="col-md-8">
+
+        <form class="d-flex flex-column flex-md-row align-items-baseline" asp-controller="Izdelki" asp-action="Index" method="get">
+            <div class="m-0 p-0 col-12 col-md-2 mr-5">
+                <select asp-for="IzbranTipIzdelka" class="browser-default custom-select">
+                    <option value="">Pokaži vse</option>
+                    @foreach (var tipIzdelka in Model.TipiIzdelka)
+                    {
+                        if (tipIzdelka.Text == @ViewBag.TipIzdelka)
+                        {
+                            <option value="@tipIzdelka.Text" selected>@tipIzdelka.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@tipIzdelka.Text">@tipIzdelka.Text</option>
+                        }
+                    }
+
+
+                </select>
+            </div>
+            @*
+                <div class="">
+                    <input class="p-2" type="text" asp-for="SearchString" value="@ViewBag.SearchString" />
+
+                    <button type="submit" class="btn btn-info p-3">
+                        <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+                    </button>
+                    @if (@ViewBag.SearchString != null || @ViewBag.TipIzdelka != null)
+                    {
+                        <a asp-action="Index" asp-controller="Izdelki">Nazaj na prikaz vseh izdelkov</a>
+                    }
+
+
+                </div>
+            *@
+            <div class="input-group md-form form-sm form-2 pl-0 d-flex justify-content-center justify-content-md-start">
+                <input class="pl-4 py-2 col-7 col-md-4" type="text" asp-for="SearchString" value="@ViewBag.SearchString">
+                <input type="hidden" name="filtriranje" value="@ViewBag.IzbranFilter" />
+                <label for="SearchString" class="p-2">Vnesite ime izdelka...</label>
+
+                <div class="input-group-append ml-4">
+                    <button type="submit" class="btn btn-outline-unique2 btn px-2 mx-0">
+                        <span class="mr-1">Iskanje </span>  <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+                    </button>
+                </div>
+                @if (@ViewBag.SearchString != null || @ViewBag.TipIzdelka != null)
+                {
+                    <div class="d-flex align-self-center ml-sm-3 mt-2 mt-md-0">
+                        <a asp-action="Index" asp-controller="Izdelki">Nazaj</a>
+                    </div>
+
+                }
+
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4 d-flex align-items-center justify-content-end">
+        <!-- Split button -->
+        <div class="btn-group orderBy2 mb-3 mb-md-0">
+            <a type="button" class="btn btn-outline-unique2" asp-action="Index" asp-controller="Izdelki">
+
+                @if (ViewBag.IzbranFilter == null)
+                {
+                    <span>Razvrščanje</span>
+                }
+                else
+                {
+                    <span>@ViewBag.IzbranFilter</span>
+                }
+
+            </a>
+
+            <button type="button" class="btn btn-outline-unique2 dropdown-toggle px-3" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div class="dropdown-menu poravnaj z-depth-5 p-2">
+                <a class="dropdown-item dropDownCustom hoverable waves-effect waves-light py-2" asp-action="Index" asp-controller="Izdelki" asp-route-izbranTipIzdelka="@ViewBag.TipIzdelka" asp-route-SearchString="@ViewBag.SearchString">Privzeto</a>
+                <a class="dropdown-item dropDownCustom hoverable waves-effect waves-light py-2" asp-action="Index" asp-controller="Izdelki" asp-route-izbranTipIzdelka="@ViewBag.TipIzdelka" asp-route-SearchString="@ViewBag.SearchString" asp-route-filtriranje="cenaNarascajoce">Cena (najnižja do najvišja)</a>
+                <a class="dropdown-item dropDownCustom hoverable waves-effect waves-light py-2" asp-action="Index" asp-controller="Izdelki" asp-route-izbranTipIzdelka="@ViewBag.TipIzdelka" asp-route-SearchString="@ViewBag.SearchString" asp-route-filtriranje="cenaPadajoce">Cena (najvišja do najnižja)</a>
+                <a class="dropdown-item dropDownCustom hoverable waves-effect waves-light py-2" asp-action="Index" asp-controller="Izdelki" asp-route-izbranTipIzdelka="@ViewBag.TipIzdelka" asp-route-SearchString="@ViewBag.SearchString" asp-route-filtriranje="datumPadajoce">Najnovejši</a>
+                <a class="dropdown-item dropDownCustom hoverable waves-effect waves-light py-2" asp-action="Index" asp-controller="Izdelki" asp-route-izbranTipIzdelka="@ViewBag.TipIzdelka" asp-route-SearchString="@ViewBag.SearchString" asp-route-filtriranje="ocena">Po oceni</a>
+                <a class="dropdown-item dropDownCustom hoverable waves-effect waves-light py-2" asp-action="Index" asp-controller="Izdelki" asp-route-izbranTipIzdelka="@ViewBag.TipIzdelka" asp-route-SearchString="@ViewBag.SearchString" asp-route-filtriranje="priljubljenost">Po priljubljenosti</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive text-nowrap mb-4 z-depth-1 rounded">
+
+    <table class="table m-0 table-striped table-hover">
+        <thead class="black text-white">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Izdelki[0].Ime)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Izdelki[0].Opis)
+                </th>
+                
+                    <th class="text-center">
+                        @Html.DisplayNameFor(model => model.Izdelki[0].PovprecnaOcena)
+                    </th>
+                
+                <th>
+                    @Html.DisplayNameFor(model => model.Izdelki[0].Cena)
+                </th>
+
+                @*
+                    <th>
+                        @Html.DisplayNameFor(model => model.Izdelki[0].Dodan)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Izdelki[0].Posodobljen)
+                    </th>
+                *@
+                <th>
+                    @Html.DisplayNameFor(model => model.Izdelki[0].TipIzdelka)
+                </th>
+                <th class="text-center">
+                    @Html.DisplayNameFor(model => model.Izdelki[0].Izbrisan)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Izdelki)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Ime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Opis)
+                    </td>
+                    
+                    <td class="text-center">
+                        @if (item.PovprecnaOcena == 0)
+                        {
+                            <span>Ni ocen</span>
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(modelItem => item.PovprecnaOcena)
+                        }
+
+                    </td>
+                    
+                    <td>
+                       
+                        @string.Format(new System.Globalization.CultureInfo("sl-SI"), "{0:C}", item.Cena)
+                    </td>
+
+                    @*
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Dodan)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Posodobljen)
+                        </td>
+                    *@
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TipIzdelka.Ime)
+                    </td>
+                    <td class="text-center align-middle">
+                        @Html.DisplayFor(modelItem => item.Izbrisan)
+                    </td>
+                    <td class="d-flex justify-content-center">
+                        @if (item.Izbrisan == false)
+                        {
+                            <a class="izbira btn-sm btn-outline-success mr-2 " asp-action="Edit" asp-route-id="@item.ID" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-izbranTipIzdelka="@ViewBag.TipIzdelka" asp-route-SearchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje" data-placement="left" data-toggle="tooltip" title="Uredi"><i class="fa fa-edit"></i></a>
+                            <a class="izbira btn-sm btn-outline-primary mr-2 " asp-action="Details" asp-route-id="@item.ID" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-izbranTipIzdelka="@ViewBag.TipIzdelka" asp-route-SearchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje" data-placement="bottom" data-toggle="tooltip" title="Podrobnosti"><i class="fas fa-info-circle"></i></a>
+                            <a class="izbira btn-sm btn-outline-danger mr-2 " asp-action="Delete" asp-route-id="@item.ID" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-izbranTipIzdelka="@ViewBag.TipIzdelka" asp-route-SearchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje" data-placement="right" data-toggle="tooltip" title="Izbriši"><i class="fa fa-trash"></i></a>
+
+                        }
+                        else
+                        {
+                            <a class="izbira btn-sm btn-outline-primary mr-2 " asp-action="Details" asp-route-id="@item.ID" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-izbranTipIzdelka="@ViewBag.TipIzdelka" asp-route-SearchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje" data-placement="bottom" data-toggle="tooltip" title="Podrobnosti"><i class="fas fa-info-circle"></i></a>
+                            <form asp-action="Recover" method="post">
+                                <input type="hidden" name="id" value="@item.ID" />
+
+                                
+                              
+                                <button type="submit" class=" izbira btn-sm btn-outline-warning mr-2" data-placement="right" data-toggle="tooltip" title="Obnovi"><i class="fas fa-trash-restore fa-lf"></i></button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
+
+@{
+
+    var prejsnjaStran = 1;
+
+
+    if (ViewBag.StevilkaStrani != null)
+    {
+        prejsnjaStran = ViewBag.StevilkaStrani - 1;
+    }
+    var naslednjaStran = ViewBag.StevilkaStrani + 1;
+
+    if (ViewBag.StevilkaStrani == null)
+    {
+        naslednjaStran = 2;
+    }
+
+    var izklopi = "";
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination pg-teal">
+            @if (!@Model.Izdelki.HasPreviousPage)
+            {
+                izklopi = "text-muted izklopi";
+            }
+            <li class="page-item">
+                <a class="page-link @izklopi pl-0" asp-route-stevilkaStrani="@prejsnjaStran" asp-route-izbranTipIzdelka="@ViewBag.TipIzdelka" asp-route-SearchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje">Nazaj</a>
+            </li>
+            @for (var i = 1; i <= Model.Izdelki.TotalPages; i++)
+            {
+                if (i == @Model.Izdelki.PageIndex)
+                {
+                    <li class="page-item active">
+                        <a class="page-link" asp-route-kliknjenLinkStrani="@i" asp-route-stevilkaStrani="@i" asp-route-izbranTipIzdelka="@ViewBag.TipIzdelka" asp-route-SearchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje">@i <span class="sr-only">(current)</span></a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item"><a class="page-link" asp-route-kliknjenLinkStrani="@i" asp-route-stevilkaStrani="@i" asp-route-izbranTipIzdelka="@ViewBag.TipIzdelka" asp-route-SearchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje">@i</a></li>
+                }
+
+
+
+            }
+
+            @if (@Model.Izdelki.HasNextPage)
+            {
+                izklopi = "";
+            }
+            else
+            {
+                izklopi = "text-muted izklopi";
+            }
+            <li class="page-item ">
+                <a class="page-link @izklopi" asp-route-stevilkaStrani="@naslednjaStran" asp-route-izbranTipIzdelka="@ViewBag.TipIzdelka" asp-route-SearchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje">Naprej</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="d-flex">
+        <a class="nav-link customColor pl-0" asp-area="" asp-controller="Materiali" asp-action="Index">Materiali</a> <a class="nav-link customColor" asp-area="" asp-controller="TipiIzdelkov" asp-action="Index">Tipi izdelkov</a> <a class="nav-link customColor" asp-area="" asp-controller="TipiOpcij" asp-action="Index">Tipi opcij</a>
+    </div>
+
+}
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $(function () {
+
+                $(".izbira").tooltip({
+                    delay: { show: 0, hide: 0 },
+                    trigger: 'hover'
+                });
+
+            })
+
+        });
+    </script>
+
+}

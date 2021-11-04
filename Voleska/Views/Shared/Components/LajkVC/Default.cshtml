@@ -1,0 +1,50 @@
+﻿@model Voleska.ViewModel.LajkAjaxViewModel
+
+@{ 
+    //Če želiš spreminjati outline gumbov uporabi te spremenljivke
+    var stilLikeGumba = "";
+    var stilDislikeGumba = "";
+}
+<div class="text-center mr-4 my-2">
+
+    <span id="like-@Model.ID">
+        @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.SteviloLikeVC), new { steviloLike = Model.SteviloLike })
+
+    </span>
+    
+    @*Spreminjaj izgled gumba glede na klik*@
+    @if (Model.Like == "disabled")
+    {
+        stilLikeGumba = "btn-cyan";
+    }
+    else {
+        stilLikeGumba = "btn-outline-cyan";
+    }
+
+    <button id="blog-@Model.ID" class="btn btn-cyan" @Model.Like onclick="ajaxCreate(@Model.ID, true)"><i class="fa fa-thumbs-up"></i></button>
+
+</div>
+
+
+<div class="text-center mr-4 my-2">
+
+
+    <span id="dislike-@Model.ID">
+
+        @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.SteviloDislikeVC), new { steviloDislike = Model.SteviloDislike })
+    </span>
+
+    @*Spreminjaj izgled gumba glede na klik*@
+    @if (Model.Dislike == "disabled")
+    {
+        stilDislikeGumba = "btn-danger";
+    }
+    else
+    {
+        stilDislikeGumba = "btn-outline-danger";
+    }
+
+
+    <button id="blog-@Model.ID" class="btn btn-danger " @Model.Dislike onclick="ajaxCreate(@Model.ID, false)"><i class="fa fa-thumbs-down"></i></button>
+</div>
+

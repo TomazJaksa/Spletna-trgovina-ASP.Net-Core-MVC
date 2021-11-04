@@ -1,0 +1,549 @@
+﻿@model IEnumerable<Voleska.Models.Narocilo>
+
+<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
+@{
+    ViewData["Title"] = "Moja Košarica";
+
+
+}
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+
+    <!-- Add .modal-dialog-centered to .modal-dialog to vertically center the modal -->
+    <div class="modal-dialog modal-dialog-centered" role="document">
+
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Opomba za izdelek <span id="imeIzdelkaModal"></span></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+
+                <form class="needs-validation" novalidate>
+                    <input type="hidden" id="narociloIdModal" />
+
+                    <div class="form-outline md-form amber-textarea active-amber-textarea animated fadeIn">
+                        <i class="fas fa-pencil-alt prefix"></i>
+                        <textarea id="opombaModal" name="opombaModal" class="md-textarea form-control pt-5" rows="3" required></textarea>
+                        <label for="opombaModal">Dodaj opombo...</label>
+                    </div>
+                </form>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Zapri</button>
+                <button id="gumbOpomba" type="submit" class="btn btn-outline-success" data-dismiss="modal" onclick="ajaxOpomba(document.getElementById('opombaModal').value, document.getElementById('narociloIdModal').value, document.getElementById('imeIzdelkaModal').innerHTML)">Dodaj opombo</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-white d-flex justify-content-center">
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-izbira="domov" class="customColor">Domov</a></li>
+        <li class="breadcrumb-item active">Košarica</li>
+    </ol>
+</nav>
+
+<h1 class="text-center mb-5">Moja Košarica</h1>
+
+@{
+
+    var prestej = Model.Count();
+    var idTransakcije = 0;
+
+    if (prestej == 0)
+    {
+        <p class=" mt-5 zapolniStran display-4 d-flex justify-content-center align-items-center flex-column "><i class="far fa-sad-tear fa-3x text-primary"></i><span class="my-3">Košarica je prazna!</span></p>
+    }
+    else
+    {
+        <p id="praznaKosarica" class="no-display"><i class="far fa-sad-tear fa-3x text-primary"></i><span class="my-3">Košarica je prazna!</span></p>
+        <div id="trenutnaKolicina2" class="no-display">
+            @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.PrenosPodatkov2VC), new { })
+        </div>
+
+        <div class="table-responsive text-nowrap mb-4 z-depth-1 rounded">
+
+            <table class="table m-0" id="narocila">
+                <thead class="black text-white">
+                    <tr>
+                        <th>
+
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Izdelek.Ime)
+                        </th>
+                        <th>
+                            @Html.DisplayName("Opcija")
+                        </th>
+
+                        <th class="text-center">
+                            @Html.DisplayNameFor(model => model.Opombe)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Material.Ime)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Izdelek.Cena)
+                        </th>
+                        <th class="text-center">
+                            @Html.DisplayNameFor(model => model.Kolicina)
+                        </th>
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.Znesek)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+
+                <tbody>
+
+
+                    @foreach (var item in Model)
+                    {
+                    <tr id="narocilo-@item.ID">
+                        @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.NarociloVC), new { narociloId=item.ID})
+                    </tr>
+                    }
+                    @foreach (var item in Model)
+                    {
+
+                        idTransakcije = item.Transakcija.ID;
+
+                        <tr class="bg-light">
+
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td class="text-center align-middle">
+                                <span>Skupni znesek: </span>
+                            </td>
+                            <td class="align-middle">
+                                <span id="skupniZnesek">
+                                    @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.SkupniZnesekVC), new { skupniZnesek = item.Transakcija.SkupniZnesek })
+                                </span>
+                            </td>
+                            <td></td>
+                        </tr>
+
+
+                        break;
+                    }
+
+
+
+                </tbody>
+            </table>
+        </div>
+        var skrij = "";
+
+        <div id="seznamOpomb" class="wow animated fadeIn">
+            @foreach (var item in Model)
+            {
+                if (item.Opombe != null)
+                {
+                    skrij = "";
+                }
+                else
+                {
+                    skrij = "no-display";
+                }
+
+            <div id="opomba-@item.ID" class="@skrij">
+                @if (item.Opombe != null)
+                {
+                    @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.OpombaVC), new { opomba = item.Opombe, narociloId = item.ID, imeIzdelka = item.Izdelek.Ime })
+
+                }
+            </div>
+            }
+        </div>
+
+        <form id="naBlagajno" asp-area="" asp-controller="Katalog" method="post" asp-action="NaBlagajno" asp-route-transakcijaId="@idTransakcije">
+            <div class="form-group">
+                <input type="submit" value="Nadaljuj na blagajno!" class=" ml-0 btn btn-outline-success wow animated fadeIn" />
+
+            </div>
+
+        </form>
+
+    }
+}
+
+
+@section Scripts {
+    <script type="text/javascript">
+        /*
+        var x = null;
+        function novaVrednost(id) {
+
+
+            x = $('#trenutnaKolicina-' + id).val();
+
+            $('.minus-' + id).attr("id", "trenutnaKolicinaParameterMinus");
+            $('.plus-' + id).attr("id", "trenutnaKolicinaParameterPlus");
+
+            $("#trenutnaKolicinaParameterMinus").attr("value", x);
+            $("#trenutnaKolicinaParameterPlus").attr("value", x);
+
+        }
+        */
+        $(document).ready(function () {
+
+            /*
+            $("#trenutnaKolicina").change(function () {
+                novaVrednost(id);
+            });
+            */
+
+
+
+
+        });
+
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('#gumbOpomba').attr('disabled', true);
+
+            $('input[type="text"],textarea').on('keyup', function () {
+                var textarea_value = $("#opombaModal").val();
+
+
+                if (textarea_value != '') {
+                    $('#gumbOpomba').attr('disabled', false);
+                } else {
+                    $('#gumbOpomba').attr('disabled', true);
+                }
+            });
+
+
+
+        });
+
+
+
+
+                    function ajaxZmanjsajStevilo(izbranIzdelek) {
+
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("ZmanjsajStevilo", "Katalog")',
+                            data: {narociloId: izbranIzdelek},
+                            dataType: "html",
+                            success: function (data) {
+
+                                $('#trenutnaKolicina-' + izbranIzdelek).html(data);
+
+                                var kolicina = $('#prenosPodatkov-' + izbranIzdelek).attr("asp-route-kolicinaAjax");
+                                
+                                var znesekString = $('#prenosPodatkov-' + izbranIzdelek).attr("asp-route-znesekAjax");
+
+
+                                var znesekConvert = znesekString.replace(',', '.');
+
+                                var znesek = parseFloat(znesekConvert);
+
+                                var skupnaKolicina = $('#prenosPodatkov-' + izbranIzdelek).attr("asp-route-skupnaKolicinaAjax");
+                                var skupniZnesekString = $('#prenosPodatkov-' + izbranIzdelek).attr("asp-route-skupniZnesekAjax");
+
+
+                                var skupniZnesekConvert = skupniZnesekString.replace(',', '.');
+
+                                var skupniZnesek = parseFloat(skupniZnesekConvert);
+
+                                if (kolicina == 0) {
+                                    ajaxOdstraniIzKosarice(izbranIzdelek);
+                                } else {
+                                    ajaxKolicinaReload(kolicina, izbranIzdelek);
+                                    ajaxZnesekReload(znesek, izbranIzdelek);
+                                    ajaxSkupnaKolicinaReload(skupnaKolicina);
+                                    ajaxSkupniZnesekReload(skupniZnesek);
+                                }
+                            },
+                            failure: function (data) {
+
+                                alert(response);
+                            },
+                            error: function (data) {
+                                console.log("Error!");
+                            }
+
+                        });
+                    }
+
+                    function ajaxPovecajStevilo(izbranIzdelek) {
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("PovecajStevilo", "Katalog")',
+                            data: { narociloId: izbranIzdelek },
+                            dataType: "html",
+                            success: function (data) {
+                                $('#trenutnaKolicina-' + izbranIzdelek).html(data);
+
+                                var kolicina = $('#prenosPodatkov-' + izbranIzdelek).attr("asp-route-kolicinaAjax");
+                                
+                                var znesekString = $('#prenosPodatkov-' + izbranIzdelek).attr("asp-route-znesekAjax");
+
+          
+                                var znesekConvert = znesekString.replace(',', '.') ;
+                               
+                                var znesek = parseFloat(znesekConvert);
+                                
+                               
+                                var skupnaKolicina = $('#prenosPodatkov-' + izbranIzdelek).attr("asp-route-skupnaKolicinaAjax");
+                                var skupniZnesekString = $('#prenosPodatkov-' + izbranIzdelek).attr("asp-route-skupniZnesekAjax");
+
+                                
+                                var skupniZnesekConvert = skupniZnesekString.replace(',', '.');
+                                
+                                var skupniZnesek = parseFloat(skupniZnesekConvert);
+                                
+
+                                ajaxKolicinaReload(kolicina, izbranIzdelek);
+                                ajaxZnesekReload(znesek, izbranIzdelek);
+                                ajaxSkupnaKolicinaReload(skupnaKolicina);
+                                ajaxSkupniZnesekReload(skupniZnesek);
+                            },
+                            failure: function (data) {
+                                alert(response.responseText);
+                            },
+                            error: function (data) {
+                                alert(response.responseText);
+                            }
+
+                        });
+                    }
+
+                    function ajaxOdstraniIzKosarice(izbranIzdelek) {
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("OdstraniIzKosarice", "Katalog")',
+                            data: { narociloId: izbranIzdelek },
+                            dataType: "html",
+                            success: function (data) {
+                                $('#trenutnaKolicina2').html(data);
+                                var skupnaKolicina = $('#prenosPodatkov2-' + izbranIzdelek).attr("asp-route-skupnaKolicinaAjax");
+                                var skupniZnesek = $('#prenosPodatkov2-' + izbranIzdelek).attr("asp-route-skupniZnesekAjax");
+
+                                ajaxSkupnaKolicinaReload(skupnaKolicina);
+                                ajaxSkupniZnesekReload(skupniZnesek);
+
+                                if (skupnaKolicina == 0) {
+                                    $('#narocila').remove();
+                                    $('#naBlagajno').remove();
+                                    $('#praznaKosarica').removeClass("no-display");
+                                    $('#praznaKosarica').addClass("mt-5 zapolniStran display-4 d-flex justify-content-center align-items-center flex-column");
+                                    $('#praznaKosarica').addClass("animated fadeIn");
+                                    $('#praznaKosarica').css("display", "block");
+                                    $("#opomba-" + izbranIzdelek).remove();
+                                    $('#narocila').find("*").remove();
+                                } else {
+                                    $('#narocilo-' + izbranIzdelek).addClass("wow animated fadeOutLeft");
+
+                                    $("#opomba-" + izbranIzdelek).addClass("wow animated fadeOutLeft");
+
+                                    setTimeout(function () {
+                                        
+                                        $('#narocilo-' + izbranIzdelek).addClass("no-display");
+
+                                        $("#opomba-" + izbranIzdelek).addClass("no-display");
+                                    }, 700);
+
+                                }
+
+                            },
+                            failure: function (data) {
+                                alert("Fail!");
+                            },
+                            error: function (data) {
+                                alert("Error!");
+                            }
+
+                        });
+                    }
+
+
+                    function ajaxKolicinaReload(kolicina, narociloId) {
+                        $.ajax({
+                            url: '@Url.Action("KolicinaReload", "Katalog")',
+                            data: { kolicina: kolicina, narociloId: narociloId },
+                            success: function (data) {
+
+                                $('#trenutnaKolicina-' + narociloId).html(data);
+
+                            },
+                            failure: function (response) {
+                                alert(response.responseText);
+                            },
+                            error: function (response) {
+                                alert(response.responseText);
+                            }
+                        });
+                    }
+
+                    function ajaxZnesekReload(znesek, narociloId) {
+                        $.ajax({
+                            url: '@Url.Action("ZnesekReload", "Katalog")',
+                            data: { znesek: znesek, narociloId: narociloId },
+                            success: function (data) {
+                                $('#znesek-' + narociloId).html(data);
+                            }
+                        });
+                    }
+
+                    function ajaxSkupnaKolicinaReload(skupnaKolicina) {
+                        $.ajax({
+                            url: '@Url.Action("SkupnaKolicinaReload", "Katalog")',
+                            data: { skupnaKolicina: skupnaKolicina },
+                            success: function (data) {
+                                $("#skupnaKolicina").html(data);
+                            }
+                        });
+                    }
+
+                    function ajaxSkupniZnesekReload(skupniZnesek) {
+                        $.ajax({
+                            url: '@Url.Action("SkupniZnesekReload", "Katalog")',
+                            data: { skupniZnesek: skupniZnesek },
+                            success: function (data) {
+
+                                $("#skupniZnesek").html(data);
+                            }
+                        });
+                    }
+
+
+        function prenesiPodatke(narocilo, imeIzdelka, obstojecaVrednost) {
+
+            /*alert(narocilo +" , "+imeIzdelka+" , "+ obstojecaVrednost);*/
+            $("#narociloIdModal").val(narocilo);
+            $("#imeIzdelkaModal").text(imeIzdelka);
+
+            $("#opombaModal").val(obstojecaVrednost);
+        }
+
+
+
+        function ajaxOpomba(opombaModal, narociloIdModal, imeIzdelkaModal) {
+
+
+
+            if ($("#opombaModal").val().length < 1) {
+
+                return false;
+            } else {
+
+            }
+
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DodajOpombo", "Katalog")',
+                data: { opombaModal: opombaModal, narociloIdModal:narociloIdModal, imeIzdelkaModal: imeIzdelkaModal },
+                dataType: "html",
+                success: function (data) {
+
+                    var novaOpomba = $("#opomba-" + narociloIdModal);
+
+
+                    novaOpomba.html(data);
+                    if (novaOpomba.hasClass("no-display") == true) {
+                        novaOpomba.removeClass("no-display");
+                        novaOpomba.addClass("wow animated fadeInLeft");
+                    }
+
+                    //$("#podajOpombo-" + narociloIdModal).text(dodanaOpomba);
+
+                    NarocilaReload(narociloIdModal);
+
+
+                },
+                failure: function (data) {
+                    alert("Fail!");
+                },
+                error: function (data) {
+                    alert("Error!");
+                }
+
+            });
+        }
+
+        function NarocilaReload(narociloId) {
+                        $.ajax({
+                            url: '@Url.Action("NarocilaReload", "Katalog")',
+                            data: {  narociloId: narociloId },
+                            success: function (data) {
+
+                                $("#narocilo-" + narociloId).html(data);
+
+                            },
+                            failure: function (response) {
+                                alert(response.responseText);
+                            },
+                            error: function (response) {
+                                alert(response.responseText);
+                            }
+                        });
+                    }
+         function odstraniOpombo( narociloId) {
+
+
+
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("OdstraniOpombo", "Katalog")',
+                data: { narociloId:narociloId },
+                dataType: "html",
+                success: function (data) {
+
+                    $("#narocilo-" + narociloId).html(data);
+
+                    $("#vsebina-" + narociloId).addClass("animated fadeOutLeft");
+                    //$("#vsebina-" + narociloId).remove();
+
+                    setTimeout(function () {
+                        $("#opomba-" + narociloId).addClass("no-display");
+                    }, 700);
+
+
+                    $("#opombaModal").text("");
+
+
+                },
+                failure: function (data) {
+                    alert("Fail!");
+                },
+                error: function (data) {
+                    alert("Error!");
+                }
+
+            });
+        }
+
+
+    </script>
+
+}

@@ -1,0 +1,48 @@
+﻿@model IEnumerable<Voleska.Models.Dopisovanje>
+
+
+@foreach (var pogovor in Model)
+{
+
+
+    var barva = "";
+    var poravnava = "";
+    var tekstBarva = "";
+    var novo = "";
+
+    if (pogovor.Sporocilo.Ime == "Administrator")
+    {
+        barva = "bg-primary text-white";
+        poravnava = "d-flex flex-row  justify-content-end";
+        tekstBarva = "text-white";
+    }
+    else
+    {
+        barva = "bg-light";
+        poravnava = "d-flex flex-row  justify-content-start";
+    }
+
+    if (ViewBag.NovoSporocilo != null && ViewBag.NovoSporocilo == pogovor.Sporocilo.ID)
+    {
+        novo = "animated fadeInUp";
+    }
+    else {
+        novo = "";
+    }
+    <div class="@poravnava @novo">
+
+        <div class="card @barva mb-3" style="max-width:90%; min-width:20rem;">
+            <div class="card-header">
+                @pogovor.Sporocilo.Ime @if (pogovor.Sporocilo.Priimek != null)
+                {@pogovor.Sporocilo.Priimek}
+            </div>
+            <div class="card-body">
+
+                <p class="card-text @tekstBarva">@pogovor.Sporocilo.Vsebina</p>
+            </div>
+        </div>
+
+    </div>
+
+
+}

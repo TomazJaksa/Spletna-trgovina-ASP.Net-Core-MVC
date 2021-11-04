@@ -1,0 +1,51 @@
+﻿@model Voleska.Models.Opcija
+
+@{
+    ViewData["Title"] = "Izbriši";
+}
+
+<h1 class="text-danger text-center">Izbriši</h1>
+
+<h3 class="text-center">Izbrišem opcijo "@Html.DisplayFor(model => model.Ime)"?</h3>
+<hr />
+<div class="row d-flex flex-column align-items-center">
+    
+   
+    <div class="col-md-4">
+        <!-- Card -->
+        <div class="card mt-3">
+
+            <!-- Card image -->
+            <img class="card-img-top" src="~/katalogSlike/@Html.DisplayFor(model => model.Slika)">
+
+            <!-- Card content -->
+            <div class="card-body">
+
+                <!-- Title -->
+                <h4 class="card-title"><a>@Html.DisplayFor(model => model.Ime)</a></h4>
+                <!-- Text -->
+                <p class="card-text">
+                    <p class="d-flex justify-content-between"><span class="font-weight-bold">Pripada izdelku: </span> @Html.DisplayFor(model => model.Izdelek.Ime)</p>
+                    <p class="d-flex justify-content-between"><span class="font-weight-bold">Dodan: </span>@Model.Dodan.ToString("dd.MM.yyyy, HH:mm") </p>
+                    <p class="d-flex justify-content-between"><span class="font-weight-bold">Posodobljen: </span>@Model.Posodobljen.ToString("dd.MM.yyyy, HH:mm") </p>
+                    <p class="d-flex justify-content-between"><span class="font-weight-bold">Zaloga: </span>
+                        @if (@Model.Zaloga)
+                        {<span>Na zalogi</span> }
+                        else {
+                            <span>Ni na zalogi</span>
+                        } 
+                     </p>
+                </p>
+            </div>
+
+        </div>
+        <!-- Card -->
+
+    </div>
+    
+    <form asp-action="Delete" class="d-flex justify-content-center mt-3">
+        <input type="hidden" asp-for="ID" />
+        <input type="submit" value="Izbriši" class="btn btn-danger" />
+        <a asp-action="Details" asp-controller="Izdelki" asp-route-id="@Model.Izdelek.ID" class="ml-2 customColor d-flex align-items-center">Nazaj</a>
+    </form>
+</div>

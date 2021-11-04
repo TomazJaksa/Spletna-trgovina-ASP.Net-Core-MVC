@@ -1,0 +1,203 @@
+﻿@model Voleska.Models.Izdelek
+
+@{
+    ViewData["Title"] = "Podrobnosti";
+}
+
+<nav aria-label="breadcrumb" class="">
+    <ol class="breadcrumb bg-white d-flex justify-content-center">
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-izbira="domov" class="customColor">Domov</a></li>
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Izdelki" asp-action="Index" class="customColor" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-izbranTipIzdelka="@ViewBag.TipIzdelka" asp-route-SearchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje">Izdelki</a></li>
+        <li class="breadcrumb-item active">Podrobnosti</li>
+    </ol>
+</nav>
+
+<h1 class="text-center">Podrobnosti izdelka</h1>
+
+<div>
+    <hr />
+    <div class="row">
+
+        <div class="col-sm-12 my-4">
+            <div class="table-responsive text-nowrap z-depth-1 rounded">
+
+                <table class="table  m-0">
+                    <thead class="black white-text">
+                        <tr>
+                            <th scope="col">@Html.DisplayNameFor(model => model.Ime)</th>
+                            <th scope="col">@Html.DisplayNameFor(model => model.TipIzdelka)</th>
+                            <th scope="col" class="text-center">@Html.DisplayNameFor(model => model.PovprecnaOcena)</th>
+                            <th scope="col">@Html.DisplayNameFor(model => model.Cena)</th>
+                            <th scope="col">@Html.DisplayNameFor(model => model.Dodan)</th>
+                            <th scope="col">@Html.DisplayNameFor(model => model.Posodobljen)</th>
+                            <th scope="col" class="text-center">@Html.DisplayNameFor(model => model.Izbrisan)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@Html.DisplayFor(model => model.Ime)</td>
+                            <td>@Html.DisplayFor(model => model.TipIzdelka.Ime)</td>
+                            <td class="text-center">
+                                @if (Model.PovprecnaOcena == 0)
+                                {
+                                    <span>Ni ocen</span>
+                                }
+                                else
+                                {
+                                    @Html.DisplayFor(model => model.PovprecnaOcena)
+                                }
+                            </td>
+                            <td>@string.Format(new System.Globalization.CultureInfo("sl-SI"), "{0:C}", Model.Cena)</td>
+                            <td>@Model.Dodan.ToString("dd.MM.yyyy, HH:mm")</td>
+                            <td>@Model.Posodobljen.ToString("dd.MM.yyyy, HH:mm")</td>
+                            <td class="text-center">@Html.DisplayFor(model => model.Izbrisan)</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+
+        <div class="col-sm-12 mb-4">
+            <div class="card">
+                <div class="card-header bg-default text-white">
+                    @Html.DisplayNameFor(model => model.Opis)
+                </div>
+                <div class="card-body p-4 text-justify ">
+
+                    @Html.DisplayFor(model => model.Opis)
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-sm-12 mb-4">
+            <div class="card">
+                <div class="card-header bg-default text-white">
+                    @Html.DisplayNameFor(model => model.Podrobnosti)
+                </div>
+                <div class="card-body p-4 text-justify">
+
+                    @Html.DisplayFor(model => model.Podrobnosti)
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="col-sm-12">
+            <div class="table-responsive text-nowrap z-depth-1 rounded">
+
+                <table class="table table-striped table-hover m-0" id="opcije">
+                    <thead class="black white-text">
+
+                        <tr>
+                            <th>Barva</th>
+                            <th class="text-center">Slika</th>
+                            <th class="text-center">Zaloga</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="opcije">
+                        @foreach (var item in Model.Opcije)
+                        {
+                            <tr>
+                                <td class="align-middle">
+                                    @Html.DisplayFor(modelItem => item.Ime)
+                                </td>
+                                <td class="text-center align-middle">
+                                    <img src="~/thumbnail/@item.Slika" class="img-fluid rounded z-depth-1" asp-append-version="true" />
+                                </td>
+                                <td class="text-center align-middle">
+                                    @Html.DisplayFor(modelItem => item.Zaloga)
+                                </td>
+                                <td class="text-center align-middle">
+                                    @if (Model.Izbrisan == false)
+                                    {
+                                        @if (item.Zaloga == true)
+                                        {
+                                            <a class="izbira btn-sm btn-outline-success mr-2" asp-area="" asp-controller="Opcije" asp-action="Edit" asp-route-id="@item.ID" asp-route-izdelekId="@Model.ID" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-izbranTipIzdelka="@ViewBag.TipIzdelka" asp-route-SearchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje" data-placement="left" data-toggle="tooltip" title="Uredi"><i class="fa fa-edit"></i></a>
+                                            <a class="izbira btn-sm btn-outline-danger mr-2" asp-area="" asp-controller="Opcije" asp-action="Delete" asp-route-id="@item.ID" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-izbranTipIzdelka="@ViewBag.TipIzdelka" asp-route-SearchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje" data-placement="right" data-toggle="tooltip" title="Izbriši"><i class="fa fa-trash"></i></a>
+
+                                        }
+                                        else
+                                        {
+                                            <form asp-action="Recover" asp-controller="Opcije" method="post">
+                                                <input type="hidden" name="id" value="@item.ID" />
+
+
+
+                                                <button type="submit" class=" izbira btn-sm btn-outline-warning mr-2" data-placement="right" data-toggle="tooltip" title="Obnovi"><i class="fas fa-trash-restore fa-lf"></i></button>
+                                            </form>
+                                        }
+                                    }
+
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between col-sm-12 mt-3">
+
+            @if (Model.Izbrisan == false)
+            {
+                <div class="d-flex align-items-center">
+                    <a class="nav-link  customColor pl-0 izbira" asp-area="" asp-controller="Opcije" asp-action="Create" asp-route-izdelekId="@Model.ID" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-izbranTipIzdelka="@ViewBag.TipIzdelka" asp-route-SearchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje"><i class="far fa-plus-square fa-lf mr-2"></i>Dodajanje nove opcije</a>
+                </div>
+                <div class="d-flex align-items-center">
+                    <a asp-action="Edit" asp-route-id="@Model.ID" class="nav-link customColor"><i class="fas fa-pen-square fa-lf mr-2"></i>Uredi izdelek</a> |
+                    <a asp-action="Index" class="izbira nav-link customColor pr-0" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-izbranTipIzdelka="@ViewBag.TipIzdelka" asp-route-SearchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje">Nazaj na seznam</a>
+                </div>
+
+            }
+            else
+            {
+                <div class="d-flex align-items-center">
+                   
+                    <form asp-action="Recover" class="d-flex align-items-center" method="post">
+                        <input type="hidden" asp-for="ID" />
+
+                        <input type="hidden" name="stevilkaStrani" value="@ViewBag.StevilkaStrani" />
+                        <input type="hidden" name="izbranTipIzdelka" value="@ViewBag.TipIzdelka" />
+                        <input type="hidden" name="SearchString" value="@ViewBag.SearchString" />
+                        <input type="hidden" name="filtriranje" value="@ViewBag.Filtriranje" />
+
+                        <button type="submit" class="ml-0 btn btn-warning"><i class="fas fa-trash-restore fa-lf mr-2"></i>Obnovi izdelek</button>
+                    </form>
+                </div>
+                <div class="d-flex align-items-center">
+                    <a asp-action="Index" class="nav-link customColor pr-0" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-izbranTipIzdelka="@ViewBag.TipIzdelka" asp-route-SearchString="@ViewBag.SearchString" asp-route-filtriranje="@ViewBag.Filtriranje">Nazaj na seznam</a>
+                </div>
+            }
+
+
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $(function () {
+                
+                $(".izbira").tooltip({
+                    delay: { show: 0, hide: 0 },
+                    trigger: 'hover'
+                });
+
+            })
+
+        });
+    </script>
+
+}

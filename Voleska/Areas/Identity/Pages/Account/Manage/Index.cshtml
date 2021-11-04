@@ -1,0 +1,82 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profil";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+<div>
+    <h4>@ViewData["Title"]</h4>
+    <partial name="_StatusMessage" model="Model.StatusMessage" />
+
+    
+ 
+
+    <div class="row">
+        <div class="col-md-6">
+            @if (@TempData["DodajNaslov"] != null)
+            {
+
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>@TempData["DodajNaslov"]</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            <form id="profile-form" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group md-form md-outline">
+                    <label asp-for="Username">Uporabniško ime</label>
+                    <input asp-for="Username" class="form-control" disabled />
+                </div>
+                <div class="form-group md-form md-outline">
+                    <label asp-for="Email">E-naslov</label>
+                    <input asp-for="Email" class="form-control" disabled />
+                </div>
+                <div class="form-group md-form md-outline">
+                    <label asp-for="Input.PhoneNumber">Telefonska številka</label>
+                    <input asp-for="Input.PhoneNumber" class="form-control" />
+                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                </div>
+
+                <div class="form-group md-form md-outline">
+                    <label asp-for="Input.Ime">Ime</label>
+                    <input asp-for="Input.Ime" class="form-control" />
+                    <span asp-validation-for="Input.Ime" class="text-danger"></span>
+                </div>
+
+                <div class="form-group md-form md-outline">
+                    <label asp-for="Input.Priimek">Priimek</label>
+                    <input asp-for="Input.Priimek" class="form-control" />
+                    <span asp-validation-for="Input.Priimek" class="text-danger"></span>
+                </div>
+                <div class="form-group md-form md-outline">
+                    <label asp-for="Input.Ulica">Ulica</label>
+                    <input asp-for="Input.Ulica" class="form-control" />
+                    <span asp-validation-for="Input.Ulica" class="text-danger"></span>
+                </div>
+                <div class="form-group md-form md-outline">
+                    <label asp-for="Input.HisnaStevilka">Hišna številka</label>
+                    <input asp-for="Input.HisnaStevilka" class="form-control" />
+                    <span asp-validation-for="Input.HisnaStevilka" class="text-danger"></span>
+                </div>
+                <div class="form-group md-form md-outline">
+                    <label asp-for="Input.PostnaStevilka">Poštna številka</label>
+                    <input asp-for="Input.PostnaStevilka" class="form-control" />
+                    <span asp-validation-for="Input.PostnaStevilka" class="text-danger"></span>
+                </div>
+                <div class="form-group md-form md-outline">
+                    <label asp-for="Input.Kraj">Kraj</label>
+                    <input asp-for="Input.Kraj" class="form-control" />
+                    <span asp-validation-for="Input.Kraj" class="text-danger"></span>
+                </div>
+                <button id="update-profile-button" type="submit" class="btn btn-primary">Shrani</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

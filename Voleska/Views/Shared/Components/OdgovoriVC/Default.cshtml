@@ -1,0 +1,199 @@
+﻿@model IEnumerable<Voleska.Models.Odgovor>
+
+@{ var nivo = 0;
+   var skrij = "";
+   var prikazi = "";
+    }
+
+@if (ViewBag.StOdgovorov > 0 || ViewBag.NovOdgovor == true)
+{
+
+    if (ViewBag.StOdgovorov > 0)
+    {
+
+        if (ViewBag.NovOdgovor == true)
+        {
+            prikazi = "no-display";
+            skrij = "d-flex justify-content-end align-items-center mr-1";
+        }
+        else {
+            prikazi = "d-flex justify-content-end align-items-center mr-1";
+            skrij = "no-display";
+        }
+
+        @*@ViewBag.KomentarId*@
+
+        <div id="prikaziOdgovore-@ViewBag.KomentarId" class="@prikazi">
+            <span style="cursor:pointer;" onclick="prikaziOdgovore(@ViewBag.KomentarId);" class="d-flex align-items-center">
+                Prikaži odgovore (@*ViewBag.StOdgovorov*@ <span id="steviloOdgovorov-@ViewBag.KomentarId">@await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.SteviloOdgovorovVC), new { komentarId = ViewBag.KomentarId })</span>) <i class="far fa-comment-alt ml-2 mt-1"></i>
+            </span>
+        </div>
+
+        <div id="skrijOdgovore-@ViewBag.KomentarId" class="@skrij">
+            <span style="cursor:pointer;" onclick="skrijOdgovore(@ViewBag.KomentarId);" class="d-flex align-items-center">
+                Skrij odgovore <i class="far fa-minus-square ml-2 mt-1"></i>
+            </span>
+        </div>
+    }
+
+
+
+
+
+
+    @*Vprašaj Boruta zakaj ne izpisuje pod-odgovorov*@
+    <div id="odg-@ViewBag.KomentarId" class="odgovori @ViewBag.SkrijKomentar">
+
+
+        @foreach (var odgovor in Model)
+        {
+
+
+            if (odgovor.OdgovorNaTaKomentar.Nivo != 0)
+            {
+                nivo = odgovor.OdgovorNaTaKomentar.Nivo;
+            }
+            else
+            {
+                nivo = 1;
+            }
+
+            var sirina = "";
+            if (nivo == 1)
+            {
+                sirina = "85rem";
+            }
+            else if (nivo == 2)
+            {
+                sirina = "80rem";
+
+            }
+            else if (nivo == 3)
+            {
+                sirina = "75rem";
+
+            }
+            else
+            {
+                sirina = "70rem";
+
+            }
+
+
+            @*@novKomentar*@
+            <div class=" ml-auto card text-dark bg-light mt-5 d-flex justify-content-end" id="komentar-@odgovor.OdgovorNaTaKomentarID" style="max-width:@sirina ;">
+                <div class="card-header bg-dark text-white  d-flex justify-content-between align-items-center">
+                    <span>@odgovor.OdgovorNaTaKomentar.ApplicationUser.UserName</span>
+                    <span>
+                        @odgovor.OdgovorNaTaKomentar.Dodan.ToString("dd.MM.yyyy,  HH:mm")
+
+                        <span class="ml-3">
+                            @if (odgovor.OdgovorNaTaKomentar.ApplicationUser.Id == ViewBag.UserID)
+                            {
+                                @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.TooltipKomentarVC), new { komentarId = @odgovor.OdgovorNaTaKomentarID, blogId = ViewBag.BlogId, parentId = ViewBag.KomentarId })
+
+                            }
+
+
+                        </span>
+                    </span>
+                </div>
+                <div class="card-body d-flex justify-content-between align-items-center">
+
+                    <p class="card-text mb-0">@odgovor.OdgovorNaTaKomentar.Vsebina</p>
+                    <div class="d-flex align-items-center">
+                        @{
+                            @if (User.Identity.IsAuthenticated)
+                            {
+
+                                var najdiLike = 0;
+                                var najdiDislike = 0;
+
+                                @foreach (var lajkKomentarjevNotranja in odgovor.OdgovorNaTaKomentar.LajkaniKomentarji)
+                                {
+                                    if (odgovor.OdgovorNaTaKomentarID == lajkKomentarjevNotranja.KomentarID && lajkKomentarjevNotranja.Lajk == true && lajkKomentarjevNotranja.ApplicationUserID == ViewBag.UserID)
+                                    {
+                                        najdiLike = 1;
+                                    }
+                                    else if (odgovor.OdgovorNaTaKomentarID == lajkKomentarjevNotranja.KomentarID && lajkKomentarjevNotranja.Lajk == false && lajkKomentarjevNotranja.ApplicationUserID == ViewBag.UserID)
+                                    {
+                                        najdiDislike = 1;
+                                    }
+
+                                }
+
+                                @foreach (var lajkKomentarjev in odgovor.OdgovorNaTaKomentar.LajkaniKomentarji)
+                                {
+
+
+                                    var obstaja = (lajkKomentarjev.ApplicationUserID == ViewBag.UserID && lajkKomentarjev.KomentarID == odgovor.OdgovorNaTaKomentarID) ? true : false;
+
+                                    var lajk = (lajkKomentarjev.Lajk == true && obstaja) ? "disabled" : "";
+                                    var dislajk = (lajkKomentarjev.Lajk == false && obstaja) ? "disabled" : "";
+
+                                    var lajkaDruge = (najdiLike == 1) ? "disabled" : "";
+                                    var dislajkaDruge = (najdiDislike == 1) ? "disabled" : "";
+
+
+
+                                    if (obstaja)
+                                    {
+
+                                        <div id="likeSection2-@lajkKomentarjev.KomentarID" class="d-flex">
+
+                                            @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.LajkKomentarVC), new { komentarId = lajkKomentarjev.KomentarID, blogId = ViewBag.BlogId, like = lajk, dislike = dislajk, steviloLike = odgovor.OdgovorNaTaKomentar.SteviloLike, steviloDislike = odgovor.OdgovorNaTaKomentar.SteviloDislike })
+
+                                        </div>
+                                        break;
+
+                                    }
+                                    else if (lajkKomentarjev.ApplicationUserID != ViewBag.UserID && lajkKomentarjev.KomentarID == odgovor.OdgovorNaTaKomentarID)
+                                    {
+
+                                        <div id="likeSection2-@lajkKomentarjev.KomentarID" class="d-flex">
+
+                                            @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.LajkKomentarVC), new { komentarId = lajkKomentarjev.KomentarID, blogId = ViewBag.BlogId, like = lajkaDruge, dislike = dislajkaDruge, steviloLike = odgovor.OdgovorNaTaKomentar.SteviloLike, steviloDislike = odgovor.OdgovorNaTaKomentar.SteviloDislike })
+
+                                        </div>
+
+                                        break;
+                                    }
+
+
+
+                                }
+
+
+                            }
+                            else
+                            {
+
+
+                                <a class="nav-link text-white btn btn-primary" id="login" asp-area="Identity" asp-page="/Account/Login">Vpiši se!</a>
+
+
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+
+            @if (User.Identity.IsAuthenticated)
+            {
+                @*@novGumb*@
+                <button type="button" id="gumbOdgovori-@odgovor.OdgovorNaTaKomentarID" class="ml-auto d-block btn btn-outline-warning mt-3 mr-0 " data-toggle="modal" data-target="#centralModalSm" onclick="odgovor('@odgovor.OdgovorNaTaKomentar.ApplicationUser.UserName',@odgovor.OdgovorNaTaKomentarID, '@ViewBag.UserID', @ViewBag.BlogId);">
+                    <i class="fa fa-reply mr-2"></i> Odgovori
+                </button>
+            }
+
+            <div id="odgovori-@odgovor.OdgovorNaTaKomentarID">
+                @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.OdgovoriVC), new { komentarId = @odgovor.OdgovorNaTaKomentarID, blogId = ViewBag.BlogId, nivo = ViewBag.NaslednjiNivo })
+            </div>
+
+        
+
+         }
+
+    </div>
+
+}

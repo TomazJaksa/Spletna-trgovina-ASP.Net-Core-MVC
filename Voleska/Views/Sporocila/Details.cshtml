@@ -1,0 +1,133 @@
+﻿@model IEnumerable<Voleska.Models.Dopisovanje>
+
+@{
+    ViewData["Title"] = "Podrobnosti";
+}
+<nav aria-label="breadcrumb" class="">
+    <ol class="breadcrumb bg-white d-flex justify-content-center">
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-izbira="domov" class="customColor">Domov</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Sporocila" class="customColor" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="@ViewBag.Filtriranje">Sporočila</a></li>
+        <li class="breadcrumb-item active">Podrobnosti</li>
+    </ol>
+</nav>
+
+<h1 class="text-center">@ViewBag.Tema</h1>
+<hr />
+<div id="prenosPodatkovNovoSporocilo" class="no-display">
+    @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.PrenosPodatkovKomentarVC), new { })
+</div>
+@{ var pogovorID = ViewBag.PogovorID;}
+
+<div class="d-flex flex-column" id="seznamSporocil">
+
+    @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.SeznamSporocilVC), new { pogovorId = pogovorID })
+
+</div>
+
+<div id="vnosSporocila" class="mt-5">
+
+    @await Component.InvokeAsync(nameof(Voleska.ViewComponents.ViewComponents.VnosKomentarjaVC), new { tip = "sporocilo" })
+
+</div>
+
+@{ var admin = false;}
+
+@if (User.Identity.IsAuthenticated && User.IsInRole("ADMINISTRATOR"))
+{
+    admin = true;
+}
+
+
+<button class="btn btn-warning mr-2 ml-0" onclick="return ajaxSporocilo(@pogovorID, '@admin');">
+    <i class="fa fa-comments mr-2" aria-hidden="true"></i> Odpiši
+</button>
+@if (User.Identity.IsAuthenticated && User.IsInRole("ADMINISTRATOR"))
+{
+    <a asp-action="Index" class="customColor" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="@ViewBag.Filtriranje">Nazaj</a>
+}
+
+
+
+<script>
+    function ajaxSporocilo(pogovorId, admin) {
+
+
+
+        var vsebina;
+        vsebina = $("#vsebina").val();
+        if (vsebina == "") {
+            $('#napaka').html("Vnesite sporočilo,da oddate sporočilo...Genius.");
+            $('#napaka').removeClass("no-display");
+
+            $('#napaka').addClass("animated fadeIn");
+            return false;
+        };
+
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Create", "Sporocila")',
+            data: { vsebina: vsebina, admin: admin, pogovorId: pogovorId },
+            success: function (data) {
+
+                $('#prenosPodatkovNovoSporocilo').html(data);
+
+                var sporociloId = $('#novKomentar').attr("asp-route-komentarAjax");
+                
+
+                ajaxSeznamReload(sporociloId, pogovorId);
+                ajaxVnosReload();
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+
+
+    }
+
+
+    function ajaxSeznamReload(sporociloId, pogovorId) {
+        
+            $.ajax({
+                url: '@Url.Action("SeznamReload", "Sporocila")',
+                data: { sporociloId: sporociloId, pogovorId: pogovorId},
+                success: function (data) {
+                   
+                    $('#seznamSporocil').html(data);
+
+                },
+                failure: function (response) {
+                    alert("Failure!");
+                },
+                error: function (response) {
+                    alert("Error!");
+                }
+            });
+    }
+
+     function ajaxVnosReload() {
+            $.ajax({
+                url: '@Url.Action("VnosReload", "Sporocila")',
+                data: { },
+                success: function (data) {
+                    
+                    $('#vnosSporocila').html(data);
+
+                },
+                failure: function (response) {
+                    alert("Failure!");
+                },
+                error: function (response) {
+                    alert("Error!");
+                }
+            });
+        }
+
+
+
+
+</script>

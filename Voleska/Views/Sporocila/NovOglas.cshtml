@@ -1,0 +1,127 @@
+﻿
+@{
+    ViewData["Title"] = "Ustvari nov Oglas";
+}
+<nav aria-label="breadcrumb" class="">
+    <ol class="breadcrumb bg-white d-flex justify-content-center">
+        <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-izbira="domov" class="customColor">Domov</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Sporocila" class="customColor" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="@ViewBag.Filtriranje">Sporočila</a></li>
+        <li class="breadcrumb-item active">Ustvari</li>
+    </ol>
+</nav>
+
+<h1 class="text-center">Ustvari nov oglas</h1>
+<hr />
+
+
+
+
+<div>
+    <form asp-action="NovOglas" method="post" class="col-12 d-flex flex-column align-items-center needs-validation" novalidate>
+        <div class="col-md-8">
+           
+
+            <div class="md-form md-outline">
+                <input type="text" id="form1" name="naslov" class="form-control z-depth-1 p-2 pl-3" required>
+                <label for="form1">Naslov</label>
+
+                <div class="valid-tooltip">
+                    Izgleda okej!
+                </div>
+                <div class="invalid-tooltip">
+                    <span>Naslov je obvezen!</span>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="col-md-8">
+            <div class="md-form md-outline form-group shadow-textarea mb-5">
+
+                <textarea id="editor" name="vsebina" class="no-display md-textarea form-control p-3 z-depth-1 setScrollbar scrollbar-cyan thin" rows="4" required placeholder="Vsebina..."></textarea>
+
+                <div class="valid-tooltip">
+                    Izgleda okej!
+                </div>
+                <div class="invalid-tooltip">
+                    Vsebina je obvezna!
+                </div>
+            </div>
+
+
+
+
+
+
+
+            <div class="d-flex flex-row">
+                <input type="submit" value="Ustvari" class="btn btn-primary mr-0" />
+
+                <a asp-action="Index" class="customColor ml-2 d-flex align-items-center" asp-route-stevilkaStrani="@ViewBag.StevilkaStrani" asp-route-searchString="@ViewBag.SearchString" asp-route-searchString2="@ViewBag.SearchString2" asp-route-searchString3="@ViewBag.SearchString3" asp-route-filtriranje="@ViewBag.Filtriranje">Nazaj</a>
+
+            </div>
+
+           
+
+        </div>
+
+    </form>
+
+
+</div>
+
+@section Scripts {
+
+    <script src="https://cdn.tiny.cloud/1/gt0hx2ueheviefljcali3wxukz5ipcad6k7qkru5pu9r4a92/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+
+    <script>
+
+
+        $(document).ready(function () {
+
+          
+
+
+            tinymce.init({
+                selector: '#editor',
+                height: "350",
+                skin: 'material-classic',
+                content_css: 'material-classic',
+                icons: 'material',
+                plugins: 'code image link lists wordcount',
+                toolbar: 'undo redo | styleselect | bold italic underline forecolor backcolor | link image code | align | bullist numlist | wordcount',
+
+            });
+
+
+
+          
+        });
+
+
+
+
+    
+
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+    </script>
+}
